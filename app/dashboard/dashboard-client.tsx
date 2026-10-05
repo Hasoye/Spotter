@@ -191,7 +191,7 @@ export default function ClientMemberPortal() {
     <div className="homeContainer">
       <header className="homeHeader">
         <div className="brandBar">
-          <h1 className="brandDisplay">SPOTTER</h1>
+          <img src="/icon.svg" alt="SPOTTER" width="32" height="32" />
           <span
             className={`tierBadge ${
               member.tier === "PREMIUM" ? "tierBadgePremium" : "tierBadgeBasic"

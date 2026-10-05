@@ -12,7 +12,7 @@
   box-sizing: border-box;
   background: radial-gradient(
     ellipse 70% 50% at 50% 0%,
-    rgba(0, 227, 170, 0.06) 0%,
+    color-mix(in srgb, var(--color-roles-primary) 6%, transparent) 0%,
     transparent 70%
   );
 }
@@ -24,8 +24,8 @@
 .signupCard {
   width: 100%;
   max-width: 440px;
-  background: var(--color-surface-dark);
-  border: 1px solid var(--color-surface-border);
+  background: var(--color-roles-surface);
+  border: 1px solid var(--color-roles-outline);
   border-radius: 16px;
   box-shadow: var(--effect-medium-shadow);
   display: flex;
@@ -63,7 +63,7 @@
   font-weight: var(--typography-headline-small-font-weight);
   line-height: var(--typography-headline-small-line-height);
   letter-spacing: var(--typography-headline-small-letter-spacing);
-  color: var(--color-brand-primary);
+  color: var(--color-roles-primary);
   margin: 0;
 }
 
@@ -73,7 +73,7 @@
   font-weight: var(--typography-title-large-font-weight);
   line-height: var(--typography-title-large-line-height);
   letter-spacing: var(--typography-title-large-letter-spacing);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
   margin: 0;
 }
 
@@ -83,7 +83,7 @@
   font-weight: var(--typography-body-medium-font-weight);
   line-height: var(--typography-body-medium-line-height);
   letter-spacing: var(--typography-body-medium-letter-spacing);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   margin: 0;
 }
 
@@ -107,8 +107,8 @@
 }
 
 .signupStepDot.signupStepDotActive {
-  background: var(--color-brand-primary);
-  box-shadow: 0 0 8px rgba(0, 227, 170, 0.4);
+  background: var(--color-roles-primary);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--color-roles-primary) 40%, transparent);
   width: 24px;
   border-radius: 4px;
 }
@@ -128,8 +128,8 @@
    ========================================================================== */
 
 .tierInfoBox {
-  background: rgba(0, 227, 170, 0.04);
-  border: 1px solid var(--color-surface-border);
+  background: color-mix(in srgb, var(--color-roles-primary) 4%, transparent);
+  border: 1px solid var(--color-roles-outline);
   border-radius: 10px;
   padding: 14px 16px;
   box-shadow: var(--effect-soft-shadow);
@@ -144,7 +144,7 @@
   font-weight: var(--typography-title-small-font-weight);
   line-height: var(--typography-title-small-line-height);
   letter-spacing: var(--typography-title-small-letter-spacing);
-  color: var(--color-brand-primary);
+  color: var(--color-roles-primary);
   margin: 0;
 }
 
@@ -154,7 +154,7 @@
   font-weight: var(--typography-body-small-font-weight);
   line-height: var(--typography-body-small-line-height);
   letter-spacing: var(--typography-body-small-letter-spacing);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   margin: 0;
 }
 
@@ -171,9 +171,9 @@
 .signupOtpDigitInput {
   width: 48px;
   height: 56px;
-  background: rgba(8, 12, 14, 0.75);
-  color: var(--color-text-main);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--color-roles-surface-container);
+  color: var(--color-roles-on-surface);
+  border: 1px solid var(--color-roles-outline-variant);
   border-radius: 10px;
   font-family: var(--typography-headline-medium-font-family);
   font-size: var(--typography-headline-medium-font-size);
@@ -185,14 +185,14 @@
 }
 
 .signupOtpDigitInput:focus {
-  border-color: var(--color-brand-primary);
+  border-color: var(--color-roles-primary);
   box-shadow: var(--effect-medium-shadow);
-  background: rgba(12, 18, 22, 0.9);
+  background: var(--color-roles-surface);
 }
 
 .signupOtpDigitInput.signupOtpDigitFilled {
-  border-color: rgba(0, 227, 170, 0.5);
-  background: rgba(0, 227, 170, 0.04);
+  border-color: color-mix(in srgb, var(--color-roles-primary) 50%, transparent);
+  background: color-mix(in srgb, var(--color-roles-primary) 4%, transparent);
 }
 
 /* ==========================================================================
@@ -210,14 +210,14 @@
   font-family: var(--typography-body-small-font-family);
   font-size: var(--typography-body-small-font-size);
   font-weight: var(--typography-body-small-font-weight);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
 }
 
 .signupResendButton {
   font-family: var(--typography-body-small-font-family);
   font-size: var(--typography-body-small-font-size);
   font-weight: 600;
-  color: var(--color-brand-primary);
+  color: var(--color-roles-primary);
   background: none;
   border: none;
   padding: 0;
@@ -226,12 +226,12 @@
 }
 
 .signupResendButton:hover {
-  color: var(--color-brand-hover);
+  color: var(--color-roles-primary);
   text-decoration: underline;
 }
 
 .signupResendButton:disabled {
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   cursor: not-allowed;
   text-decoration: none;
 }
@@ -241,8 +241,8 @@
    ========================================================================== */
 
 .alertBox {
-  background: rgba(0, 227, 170, 0.06);
-  border: 1px solid var(--color-surface-border);
+  background: color-mix(in srgb, var(--color-roles-primary) 6%, transparent);
+  border: 1px solid var(--color-roles-outline);
   border-radius: 10px;
   padding: 14px 16px;
   box-shadow: var(--effect-soft-shadow);
@@ -260,12 +260,12 @@
   font-weight: var(--typography-body-medium-font-weight);
   line-height: var(--typography-body-medium-line-height);
   letter-spacing: var(--typography-body-medium-letter-spacing);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
   margin: 0;
 }
 
 .alertBoxError .alertText {
-  color: var(--color-error-accent);
+  color: var(--color-roles-error);
 }
 
 .otpHint {
@@ -274,7 +274,7 @@
   font-weight: var(--typography-label-medium-font-weight);
   line-height: var(--typography-label-medium-line-height);
   letter-spacing: var(--typography-label-medium-letter-spacing);
-  color: var(--color-brand-primary);
+  color: var(--color-roles-primary);
   margin: 0;
 }
 
@@ -285,14 +285,14 @@
 .signupSuccessIcon {
   width: 56px;
   height: 56px;
-  background: rgba(0, 227, 170, 0.12);
-  border: 2px solid rgba(0, 227, 170, 0.35);
+  background: color-mix(in srgb, var(--color-roles-primary) 12%, transparent);
+  border: 2px solid color-mix(in srgb, var(--color-roles-primary) 35%, transparent);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 8px;
-  font-size: 24px;
+  font-size: var(--typography-headline-small-font-size);
   animation: signupSuccessPop 0.4s ease-out;
 }
 
@@ -326,12 +326,12 @@
   font-weight: var(--typography-body-small-font-weight);
   line-height: var(--typography-body-small-line-height);
   letter-spacing: var(--typography-body-small-letter-spacing);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   margin: 0;
 }
 
 .loginLinkContainer a {
-  color: var(--color-brand-primary);
+  color: var(--color-roles-primary);
   text-decoration: none;
   transition: color 0.15s ease;
   background: none;
@@ -341,7 +341,7 @@
 }
 
 .loginLinkContainer a:hover {
-  color: var(--color-brand-hover);
+  color: var(--color-roles-primary);
   text-decoration: underline;
 }
 

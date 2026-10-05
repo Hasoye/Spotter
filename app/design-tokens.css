@@ -1,6 +1,191 @@
 /* Auto-generated from design-tokens.tokens.json. Do not edit directly. */
 :root {
   /* ==========================================================================
+     PRIMITIVE COLOR TOKENS
+     Base color scales & palettes. DO NOT use directly in UI components.
+     ========================================================================== */
+  --primitives-key-colours-primary-key-colour: #009973ff;
+  --primitives-key-colours-secondary-key-colour: #00b889ff;
+  --primitives-key-colours-tertiary-key-colour: #70f0d0ff;
+  --primitives-key-colours-neutral-key-colour: #717975ff;
+  --primitives-key-colours-neutral-variant-key-colour: #58645eff;
+  --primitives-key-colours-error-key-colour: #ff1111ff;
+  --primitives-key-colours-warning-key-colour: #ffa500ff;
+  --primitives-colour-pallete-primary-primary0: #000000ff;
+  --primitives-colour-pallete-primary-primary10: #002116ff;
+  --primitives-colour-pallete-primary-primary20: #003828ff;
+  --primitives-colour-pallete-primary-primary30: #00513bff;
+  --primitives-colour-pallete-primary-primary40: #009973ff;
+  --primitives-colour-pallete-primary-primary50: #008864ff;
+  --primitives-colour-pallete-primary-primary60: #00a47aff;
+  --primitives-colour-pallete-primary-primary70: #00c291ff;
+  --primitives-colour-pallete-primary-primary80: #00e1a8ff;
+  --primitives-colour-pallete-primary-primary90: #45fec3ff;
+  --primitives-colour-pallete-primary-primary95: #bcffe0ff;
+  --primitives-colour-pallete-primary-primar98: #e7fff1ff;
+  --primitives-colour-pallete-primary-primary99: #f4fff7ff;
+  --primitives-colour-pallete-primary-primary100: #ffffffff;
+  --primitives-colour-pallete-secondary-secondary0: #00382aff;
+  --primitives-colour-pallete-secondary-secondary10: #00513eff;
+  --primitives-colour-pallete-secondary-secondary20: #00876aff;
+  --primitives-colour-pallete-secondary-secondary30: #2ca282ff;
+  --primitives-colour-pallete-secondary-secondary40: #4ebe9cff;
+  --primitives-colour-pallete-secondary-secondary50: #2ca282ff;
+  --primitives-colour-pallete-secondary-secondary60: #4ebe9cff;
+  --primitives-colour-pallete-secondary-secondary70: #6cdab7ff;
+  --primitives-colour-pallete-secondary-secondary80: #89f7d2ff;
+  --primitives-colour-pallete-secondary-secondary90: #baffe5ff;
+  --primitives-colour-pallete-secondary-secondary95: #e7fff3ff;
+  --primitives-colour-pallete-secondary-secondary98: #f3fff8ff;
+  --primitives-colour-pallete-secondary-secondary99: #f4fff7ff;
+  --primitives-colour-pallete-secondary-secondary100: #ffffffff;
+  --primitives-colour-pallete-tertiary-tertiary0: #000000ff;
+  --primitives-colour-pallete-tertiary-tertiary10: #002018ff;
+  --primitives-colour-pallete-tertiary-tertiary20: #00382bff;
+  --primitives-colour-pallete-tertiary-tertiary30: #005140ff;
+  --primitives-colour-pallete-tertiary-tertiary40: #006b55ff;
+  --primitives-colour-pallete-tertiary-tertiary50: #00876cff;
+  --primitives-colour-pallete-tertiary-tertiary60: #00a483ff;
+  --primitives-colour-pallete-tertiary-tertiary70: #32c09dff;
+  --primitives-colour-pallete-tertiary-tertiary80: #56dcb8ff;
+  --primitives-colour-pallete-tertiary-tertiary90: #76f9d3ff;
+  --primitives-colour-pallete-tertiary-tertiary95: #b9ffe6ff;
+  --primitives-colour-pallete-tertiary-tertiary98: #e6fff4ff;
+  --primitives-colour-pallete-tertiary-tertiary99: #f3fff8ff;
+  --primitives-colour-pallete-tertiary-tertiary100: #ffffffff;
+  --primitives-colour-pallete-neutral-neutral0: #000000ff;
+  --primitives-colour-pallete-neutral-neutral10: #161d1aff;
+  --primitives-colour-pallete-neutral-neutral20: #2a322fff;
+  --primitives-colour-pallete-neutral-neutral30: #414845ff;
+  --primitives-colour-pallete-neutral-neutral40: #58605cff;
+  --primitives-colour-pallete-neutral-neutral50: #717975ff;
+  --primitives-colour-pallete-neutral-neutral60: #8a938eff;
+  --primitives-colour-pallete-neutral-neutral70: #a5ada9ff;
+  --primitives-colour-pallete-neutral-neutral80: #c0c8c4ff;
+  --primitives-colour-pallete-neutral-neutral90: #dce4dfff;
+  --primitives-colour-pallete-neutral-neutral95: #ebf3eeff;
+  --primitives-colour-pallete-neutral-neutral98: #f3fbf6ff;
+  --primitives-colour-pallete-neutral-neutral99: #f6fef9ff;
+  --primitives-colour-pallete-neutral-neutral100: #ffffffff;
+  --primitives-colour-pallete-neutral-neutral4: #08100dff;
+  --primitives-colour-pallete-neutral-neutral6: #0e1512ff;
+  --primitives-colour-pallete-neutral-neutral12: #1a211eff;
+  --primitives-colour-pallete-neutral-neutral17: #242c29ff;
+  --primitives-colour-pallete-neutral-neutral22: #2f3633ff;
+  --primitives-colour-pallete-neutral-neutral24: #333b38ff;
+  --primitives-colour-pallete-neutral-neutral87: #d4dcd7ff;
+  --primitives-colour-pallete-neutral-neutral92: #e2eae5ff;
+  --primitives-colour-pallete-neutral-neutral94: #e8f0ebff;
+  --primitives-colour-pallete-neutral-neutral96: #eef5f0ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant0: #000000ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant10: #0f1f19ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant20: #24342dff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant30: #3a4a43ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant40: #51625aff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant50: #6a7b73ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant60: #83958cff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant70: #9eafa6ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant80: #b9cbc1ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant90: #d5e7ddff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant95: #e3f5ebff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant98: #ebfef4ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant99: #f4fff8ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant100: #ffffffff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant4: #07100cff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant6: #0a1611ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant12: #13231cff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant17: #1d2d27ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant22: #283831ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant24: #2d3d36ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant87: #ccded4ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant92: #daece2ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant94: #e0f2e8ff;
+  --primitives-colour-pallete-neutralvariant-neutralvariant96: #e6f8eeff;
+  --primitives-colour-pallete-error-error0: #000000ff;
+  --primitives-colour-pallete-error-error10: #410000ff;
+  --primitives-colour-pallete-error-error20: #690001ff;
+  --primitives-colour-pallete-error-error30: #930003ff;
+  --primitives-colour-pallete-error-error40: #c00005ff;
+  --primitives-colour-pallete-error-error50: #ef0009ff;
+  --primitives-colour-pallete-error-error60: #ff5543ff;
+  --primitives-colour-pallete-error-error70: #ff8a7aff;
+  --primitives-colour-pallete-error-error80: #ffb4a9ff;
+  --primitives-colour-pallete-error-error90: #ffdad5ff;
+  --primitives-colour-pallete-error-error95: #ffedeaff;
+  --primitives-colour-pallete-error-error98: #fff8f7ff;
+  --primitives-colour-pallete-error-error99: #fffbffff;
+  --primitives-colour-pallete-error-error100: #ffffffff;
+  --primitives-colour-pallete-warning-warning0: #000000ff;
+  --primitives-colour-pallete-warning-warning10: #2a1700ff;
+  --primitives-colour-pallete-warning-warning20: #462a00ff;
+  --primitives-colour-pallete-warning-warning30: #653e00ff;
+  --primitives-colour-pallete-warning-warning40: #855400ff;
+  --primitives-colour-pallete-warning-warning50: #a66a00ff;
+  --primitives-colour-pallete-warning-warning60: #c98100ff;
+  --primitives-colour-pallete-warning-warning70: #ed9900ff;
+  --primitives-colour-pallete-warning-warning80: #ffb95cff;
+  --primitives-colour-pallete-warning-warning90: #ffddb7ff;
+  --primitives-colour-pallete-warning-warning95: #ffeedeff;
+  --primitives-colour-pallete-warning-warning98: #fff8f4ff;
+  --primitives-colour-pallete-warning-warning99: #fffbffff;
+  --primitives-colour-pallete-warning-warning100: #ffffffff;
+
+  /* ==========================================================================
+     COLOR ROLES (SEMANTIC TOKENS)
+     Use these semantic variables directly in UI styling.
+     ========================================================================== */
+  --color-roles-primary: var(--primitives-colour-pallete-primary-primary40);
+  --color-roles-on-primary: var(--primitives-colour-pallete-primary-primary100);
+  --color-roles-primary-container: var(--primitives-colour-pallete-primary-primary95);
+  --color-roles-on-primary-container: var(--primitives-colour-pallete-primary-primary30);
+  --color-roles-secondary: var(--primitives-colour-pallete-secondary-secondary40);
+  --color-roles-on-secondary: var(--primitives-colour-pallete-secondary-secondary100);
+  --color-roles-secondary-container: var(--primitives-colour-pallete-secondary-secondary90);
+  --color-roles-on-secondary-container: var(--primitives-colour-pallete-secondary-secondary30);
+  --color-roles-tertiary: var(--primitives-colour-pallete-tertiary-tertiary40);
+  --color-roles-on-tertiary: var(--primitives-colour-pallete-tertiary-tertiary100);
+  --color-roles-tertiary-container: var(--primitives-colour-pallete-tertiary-tertiary90);
+  --color-roles-on-tertiary-container: var(--primitives-colour-pallete-tertiary-tertiary30);
+  --color-roles-error: var(--primitives-colour-pallete-error-error40);
+  --color-roles-on-error: var(--primitives-colour-pallete-error-error100);
+  --color-roles-error-container: var(--primitives-colour-pallete-error-error90);
+  --color-roles-on-error-container: var(--primitives-colour-pallete-error-error30);
+  --color-roles-surface: var(--primitives-colour-pallete-neutral-neutral98);
+  --color-roles-on-surface: var(--primitives-colour-pallete-neutral-neutral10);
+  --color-roles-surface-variant: var(--primitives-colour-pallete-neutralvariant-neutralvariant90);
+  --color-roles-on-surface-variant: var(--primitives-colour-pallete-neutralvariant-neutralvariant30);
+  --color-roles-surface-container-highest: var(--primitives-colour-pallete-neutral-neutral90);
+  --color-roles-surface-container-high: var(--primitives-colour-pallete-neutral-neutral92);
+  --color-roles-surface-container: var(--primitives-colour-pallete-neutral-neutral94);
+  --color-roles-surface-container-low: var(--primitives-colour-pallete-neutral-neutral96);
+  --color-roles-surface-container-lowest: var(--primitives-colour-pallete-neutral-neutral100);
+  --color-roles-inverse-surface: var(--primitives-colour-pallete-neutral-neutral20);
+  --color-roles-inverse-on-surface: var(--primitives-colour-pallete-neutral-neutral95);
+  --color-roles-surface-tint: var(--primitives-colour-pallete-primary-primary40);
+  --color-roles-surface-tint-color: var(--primitives-colour-pallete-primary-primary40);
+  --color-roles-outline: var(--primitives-colour-pallete-neutralvariant-neutralvariant50);
+  --color-roles-outline-variant: var(--primitives-colour-pallete-neutralvariant-neutralvariant80);
+  --color-roles-primary-fixed: var(--primitives-colour-pallete-primary-primary90);
+  --color-roles-on-primary-fixed: var(--primitives-colour-pallete-primary-primary10);
+  --color-roles-primary-fixed-dim: var(--primitives-colour-pallete-primary-primary80);
+  --color-roles-on-primary-fixed-variant: var(--primitives-colour-pallete-primary-primary30);
+  --color-roles-inverse-primary: var(--primitives-colour-pallete-primary-primary80);
+  --color-roles-secondary-fixed: var(--primitives-colour-pallete-secondary-secondary90);
+  --color-roles-on-secondary-fixed: var(--primitives-colour-pallete-secondary-secondary10);
+  --color-roles-secondary-fixed-dim: var(--primitives-colour-pallete-secondary-secondary80);
+  --color-roles-on-secondary-fixed-variant: var(--primitives-colour-pallete-secondary-secondary30);
+  --color-roles-tertiary-fixed: var(--primitives-colour-pallete-tertiary-tertiary90);
+  --color-roles-on-tertiary-fixed: var(--primitives-colour-pallete-tertiary-tertiary10);
+  --color-roles-tertiary-fixed-dim: var(--primitives-colour-pallete-tertiary-tertiary80);
+  --color-roles-on-tertiary-fixed-variant: var(--primitives-colour-pallete-tertiary-tertiary30);
+  --color-roles-background: var(--primitives-colour-pallete-neutral-neutral98);
+  --color-roles-on-background: var(--primitives-colour-pallete-neutral-neutral10);
+  --color-roles-surface-bright: var(--primitives-colour-pallete-neutral-neutral98);
+  --color-roles-surface-dim: var(--primitives-colour-pallete-neutral-neutral87);
+  --color-roles-scrim: var(--primitives-colour-pallete-neutral-neutral0);
+  --color-roles-shadow: {primitives.colour pallete.neutral.neutral0};
+
+  /* ==========================================================================
      EFFECTS & SHADOWS
      ========================================================================== */
   --effect-soft-shadow: 1.5px 6px 30px 0 #00e3aa1f;
@@ -175,5 +360,24 @@
   --typography-label-small-paragraph-indent: 0;
   --typography-label-small-paragraph-spacing: 0;
   --typography-label-small-text-case: none;
+
+  /* ==========================================================================
+     GENERAL DESIGN TOKENS
+     ========================================================================== */
+  --font-display-large: [object Object];
+  --font-display-medium: [object Object];
+  --font-display-small: [object Object];
+  --font-headline-large: [object Object];
+  --font-headline-medium: [object Object];
+  --font-headline-small: [object Object];
+  --font-title-large: [object Object];
+  --font-title-medium: [object Object];
+  --font-title-small: [object Object];
+  --font-body-large: [object Object];
+  --font-body-medium: [object Object];
+  --font-body-small: [object Object];
+  --font-label-large: [object Object];
+  --font-label-medium: [object Object];
+  --font-label-small: [object Object];
 
 }

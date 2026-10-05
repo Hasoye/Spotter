@@ -79,7 +79,7 @@ export default function LandingPage() {
   return (
     <div className="landingPage">
       <nav className="landingNav" aria-label="Main navigation">
-        <span className="landingNavBrand">SPOTTER</span>
+        <img src="/icon.svg" alt="SPOTTER" width="32" height="32" className="landingNavBrand" />
         <div className="landingNavActions">
           <Link href="/login" className="navLinkSecondary" id="nav-login">
             Log In
@@ -91,7 +91,7 @@ export default function LandingPage() {
       </nav>
 
       <section className="heroSection" aria-label="Introduction">
-        <span className="heroBadge">Member Portal</span>
+
         <h1 className="heroHeading">
           Your Gym, <span className="heroHeadingAccent">One Tap Away</span>
         </h1>

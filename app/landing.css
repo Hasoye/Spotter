@@ -29,7 +29,7 @@
   font-weight: var(--typography-headline-small-font-weight);
   line-height: var(--typography-headline-small-line-height);
   letter-spacing: var(--typography-headline-small-letter-spacing);
-  color: var(--color-brand-primary);
+  color: var(--color-roles-primary);
   margin: 0;
   text-decoration: none;
 }
@@ -46,7 +46,7 @@
   font-weight: var(--typography-label-large-font-weight);
   line-height: var(--typography-label-large-line-height);
   letter-spacing: var(--typography-label-large-letter-spacing);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   text-decoration: none;
   padding: 10px 18px;
   border-radius: 8px;
@@ -54,7 +54,7 @@
 }
 
 .navLinkSecondary:hover {
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -64,8 +64,8 @@
   font-weight: 600;
   line-height: var(--typography-label-large-line-height);
   letter-spacing: var(--typography-label-large-letter-spacing);
-  background: linear-gradient(135deg, #00e3aa 0%, #00b88a 100%);
-  color: #070c0e;
+  background: linear-gradient(135deg, var(--color-roles-primary) 0%, var(--color-roles-primary) 100%);
+  color: var(--color-roles-on-primary);
   text-decoration: none;
   padding: 10px 22px;
   border-radius: 8px;
@@ -74,7 +74,7 @@
 }
 
 .navLinkPrimary:hover {
-  background: linear-gradient(135deg, #05f0b5 0%, #00c996 100%);
+  background: linear-gradient(135deg, #05f0b5 0%, var(--color-roles-primary) 100%);
   box-shadow: var(--effect-hard-shadow);
   transform: translateY(-1px);
 }
@@ -104,29 +104,14 @@
   height: 600px;
   background: radial-gradient(
     circle,
-    rgba(0, 227, 170, 0.08) 0%,
+    color-mix(in srgb, var(--color-roles-primary) 8%, transparent) 0%,
     transparent 70%
   );
   pointer-events: none;
   z-index: 0;
 }
 
-.heroBadge {
-  font-family: var(--typography-label-medium-font-family);
-  font-size: var(--typography-label-medium-font-size);
-  font-weight: 600;
-  line-height: var(--typography-label-medium-line-height);
-  letter-spacing: 0.5px;
-  color: var(--color-brand-primary);
-  background: rgba(0, 227, 170, 0.1);
-  border: 1px solid rgba(0, 227, 170, 0.25);
-  border-radius: 9999px;
-  padding: 6px 16px;
-  text-transform: uppercase;
-  position: relative;
-  z-index: 1;
-  animation: fadeInUp 0.6s ease-out;
-}
+
 
 .heroHeading {
   font-family: var(--typography-display-medium-font-family);
@@ -134,7 +119,7 @@
   font-weight: var(--typography-display-medium-font-weight);
   line-height: var(--typography-display-medium-line-height);
   letter-spacing: var(--typography-display-medium-letter-spacing);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-background);
   margin: 24px 0 0;
   position: relative;
   z-index: 1;
@@ -142,7 +127,7 @@
 }
 
 .heroHeadingAccent {
-  background: linear-gradient(135deg, #00e3aa 0%, #00d4a0 50%, #00b88a 100%);
+  background: linear-gradient(135deg, var(--color-roles-primary) 0%, var(--color-roles-primary) 50%, var(--color-roles-primary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -154,7 +139,7 @@
   font-weight: var(--typography-body-large-font-weight);
   line-height: var(--typography-body-large-line-height);
   letter-spacing: var(--typography-body-large-letter-spacing);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   margin: 16px 0 0;
   max-width: 560px;
   position: relative;
@@ -177,8 +162,8 @@
   font-weight: 600;
   line-height: var(--typography-label-large-line-height);
   letter-spacing: var(--typography-label-large-letter-spacing);
-  background: linear-gradient(135deg, #00e3aa 0%, #00b88a 100%);
-  color: #070c0e;
+  background: linear-gradient(135deg, var(--color-roles-primary) 0%, var(--color-roles-primary) 100%);
+  color: var(--color-roles-on-primary);
   text-decoration: none;
   padding: 14px 32px;
   border-radius: 10px;
@@ -187,7 +172,7 @@
 }
 
 .heroActionPrimary:hover {
-  background: linear-gradient(135deg, #05f0b5 0%, #00c996 100%);
+  background: linear-gradient(135deg, #05f0b5 0%, var(--color-roles-primary) 100%);
   box-shadow: var(--effect-hard-shadow);
   transform: translateY(-2px);
 }
@@ -199,7 +184,7 @@
   line-height: var(--typography-label-large-line-height);
   letter-spacing: var(--typography-label-large-letter-spacing);
   background: rgba(255, 255, 255, 0.05);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
   border: 1px solid rgba(255, 255, 255, 0.12);
   text-decoration: none;
   padding: 14px 32px;
@@ -230,7 +215,7 @@
   font-weight: var(--typography-headline-large-font-weight);
   line-height: var(--typography-headline-large-line-height);
   letter-spacing: var(--typography-headline-large-letter-spacing);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
   text-align: center;
   margin: 0 0 48px;
 }
@@ -242,8 +227,8 @@
 }
 
 .featureCard {
-  background: var(--color-surface-dark);
-  border: 1px solid var(--color-surface-border);
+  background: var(--color-roles-surface);
+  border: 1px solid var(--color-roles-outline);
   border-radius: 14px;
   padding: 28px 24px;
   box-shadow: var(--effect-soft-shadow);
@@ -254,7 +239,7 @@
 }
 
 .featureCard:hover {
-  border-color: rgba(0, 227, 170, 0.4);
+  border-color: color-mix(in srgb, var(--color-roles-primary) 40%, transparent);
   box-shadow: var(--effect-medium-shadow);
   transform: translateY(-4px);
 }
@@ -262,13 +247,13 @@
 .featureIcon {
   width: 48px;
   height: 48px;
-  background: rgba(0, 227, 170, 0.1);
-  border: 1px solid rgba(0, 227, 170, 0.2);
+  background: color-mix(in srgb, var(--color-roles-primary) 10%, transparent);
+  border: 1px solid var(--color-roles-outline);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: var(--typography-title-large-font-size);
 }
 
 .featureTitle {
@@ -277,7 +262,7 @@
   font-weight: var(--typography-title-medium-font-weight);
   line-height: var(--typography-title-medium-line-height);
   letter-spacing: var(--typography-title-medium-letter-spacing);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
   margin: 0;
 }
 
@@ -287,7 +272,7 @@
   font-weight: var(--typography-body-medium-font-weight);
   line-height: var(--typography-body-medium-line-height);
   letter-spacing: var(--typography-body-medium-letter-spacing);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   margin: 0;
 }
 
@@ -308,7 +293,7 @@
   font-weight: var(--typography-body-small-font-weight);
   line-height: var(--typography-body-small-line-height);
   letter-spacing: var(--typography-body-small-letter-spacing);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   margin: 0;
 }
 
