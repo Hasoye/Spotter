@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     template: "%s | Spotter",
   },
   description: "Gym member retrieval portal",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

@@ -4,12 +4,10 @@ import "./landing.css";
 
 export const metadata: Metadata = {
   title: "Spotter — Your Gym, One Tap Away",
-  description:
-    "Check in by QR code, ask about your balance, attendance, or gym rules, and pay or renew your membership — all from your phone.",
+  description: "Gym member retrieval portal",
   openGraph: {
     title: "Spotter — Your Gym, One Tap Away",
-    description:
-      "Check in by QR code, ask about your balance, attendance, or gym rules, and pay or renew your membership — all from your phone.",
+    description: "Gym member retrieval portal",
     url: "https://spottergym.com",
     siteName: "Spotter",
     locale: "en_US",
@@ -26,8 +24,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Spotter — Your Gym, One Tap Away",
-    description:
-      "Check in by QR code, ask about your balance, attendance, or gym rules, and pay or renew your membership — all from your phone.",
+    description: "Gym member retrieval portal",
     images: ["/og-image.png"],
   },
   robots: {
