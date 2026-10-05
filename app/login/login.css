@@ -1,0 +1,343 @@
+/* ==========================================================================
+   LOGIN PAGE LAYOUT
+   ========================================================================== */
+
+.loginPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  background: radial-gradient(
+    ellipse 70% 50% at 50% 0%,
+    rgba(0, 227, 170, 0.06) 0%,
+    transparent 70%
+  );
+}
+
+/* ==========================================================================
+   LOGIN CARD
+   ========================================================================== */
+
+.loginCard {
+  width: 100%;
+  max-width: 440px;
+  background: var(--color-surface-dark);
+  border: 1px solid var(--color-surface-border);
+  border-radius: 16px;
+  box-shadow: var(--effect-medium-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 36px 32px;
+  animation: loginCardEnter 0.5s ease-out;
+}
+
+@keyframes loginCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+.loginHeader {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.loginBrand {
+  font-family: var(--typography-headline-small-font-family);
+  font-size: var(--typography-headline-small-font-size);
+  font-weight: var(--typography-headline-small-font-weight);
+  line-height: var(--typography-headline-small-line-height);
+  letter-spacing: var(--typography-headline-small-letter-spacing);
+  color: var(--color-brand-primary);
+  margin: 0;
+}
+
+.loginTitle {
+  font-family: var(--typography-title-large-font-family);
+  font-size: var(--typography-title-large-font-size);
+  font-weight: var(--typography-title-large-font-weight);
+  line-height: var(--typography-title-large-line-height);
+  letter-spacing: var(--typography-title-large-letter-spacing);
+  color: var(--color-text-main);
+  margin: 0;
+}
+
+.loginSubtitle {
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  font-weight: var(--typography-body-medium-font-weight);
+  line-height: var(--typography-body-medium-line-height);
+  letter-spacing: var(--typography-body-medium-letter-spacing);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ==========================================================================
+   FORM
+   ========================================================================== */
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ==========================================================================
+   OTP INPUT GROUP
+   ========================================================================== */
+
+.otpInputRow {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.otpDigitInput {
+  width: 48px;
+  height: 56px;
+  background: rgba(8, 12, 14, 0.75);
+  color: var(--color-text-main);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  font-family: var(--typography-headline-medium-font-family);
+  font-size: var(--typography-headline-medium-font-size);
+  font-weight: var(--typography-headline-medium-font-weight);
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+  box-shadow: var(--effect-soft-shadow);
+  outline: none;
+}
+
+.otpDigitInput:focus {
+  border-color: var(--color-brand-primary);
+  box-shadow: var(--effect-medium-shadow);
+  background: rgba(12, 18, 22, 0.9);
+}
+
+.otpDigitInput.otpDigitFilled {
+  border-color: rgba(0, 227, 170, 0.5);
+  background: rgba(0, 227, 170, 0.04);
+}
+
+/* ==========================================================================
+   STEP INDICATOR
+   ========================================================================== */
+
+.loginStepIndicator {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+}
+
+.loginStepDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.loginStepDot.loginStepDotActive {
+  background: var(--color-brand-primary);
+  box-shadow: 0 0 8px rgba(0, 227, 170, 0.4);
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   ALERT BOXES (shared pattern with signup, but scoped to login card)
+   ========================================================================== */
+
+.loginAlertBox {
+  background: rgba(0, 227, 170, 0.06);
+  border: 1px solid var(--color-surface-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: var(--effect-soft-shadow);
+}
+
+.loginAlertBoxError {
+  background: rgba(255, 82, 82, 0.08);
+  border-color: rgba(255, 82, 82, 0.3);
+  box-shadow: var(--effect-hard-shadow);
+}
+
+.loginAlertText {
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  font-weight: var(--typography-body-medium-font-weight);
+  line-height: var(--typography-body-medium-line-height);
+  letter-spacing: var(--typography-body-medium-letter-spacing);
+  color: var(--color-text-main);
+  margin: 0;
+}
+
+.loginAlertBoxError .loginAlertText {
+  color: var(--color-error-accent);
+}
+
+.loginOtpHint {
+  font-family: var(--typography-label-medium-font-family);
+  font-size: var(--typography-label-medium-font-size);
+  font-weight: var(--typography-label-medium-font-weight);
+  line-height: var(--typography-label-medium-line-height);
+  letter-spacing: var(--typography-label-medium-letter-spacing);
+  color: var(--color-brand-primary);
+  margin: 0;
+}
+
+/* ==========================================================================
+   RESEND LINK
+   ========================================================================== */
+
+.resendRow {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  align-items: center;
+}
+
+.resendText {
+  font-family: var(--typography-body-small-font-family);
+  font-size: var(--typography-body-small-font-size);
+  font-weight: var(--typography-body-small-font-weight);
+  color: var(--color-text-muted);
+}
+
+.resendButton {
+  font-family: var(--typography-body-small-font-family);
+  font-size: var(--typography-body-small-font-size);
+  font-weight: 600;
+  color: var(--color-brand-primary);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.resendButton:hover {
+  color: var(--color-brand-hover);
+  text-decoration: underline;
+}
+
+.resendButton:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   FOOTER / SIGNUP LINK
+   ========================================================================== */
+
+.loginFooter {
+  text-align: center;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.loginFooterText {
+  font-family: var(--typography-body-small-font-family);
+  font-size: var(--typography-body-small-font-size);
+  font-weight: var(--typography-body-small-font-weight);
+  line-height: var(--typography-body-small-line-height);
+  letter-spacing: var(--typography-body-small-letter-spacing);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.loginFooter a {
+  color: var(--color-brand-primary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.loginFooter a:hover {
+  color: var(--color-brand-hover);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   SUCCESS STATE
+   ========================================================================== */
+
+.loginSuccessIcon {
+  width: 56px;
+  height: 56px;
+  background: rgba(0, 227, 170, 0.12);
+  border: 2px solid rgba(0, 227, 170, 0.35);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+  font-size: 24px;
+  animation: successPop 0.4s ease-out;
+}
+
+@keyframes successPop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .loginPage {
+    padding: 16px 12px;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+
+  .loginCard {
+    padding: 28px 20px;
+    border-radius: 12px;
+    gap: 20px;
+  }
+
+  .loginBrand {
+    font-size: var(--typography-title-large-font-size);
+    line-height: var(--typography-title-large-line-height);
+    letter-spacing: var(--typography-title-large-letter-spacing);
+  }
+
+  .loginTitle {
+    font-size: var(--typography-title-medium-font-size);
+    line-height: var(--typography-title-medium-line-height);
+    letter-spacing: var(--typography-title-medium-letter-spacing);
+  }
+
+  .otpDigitInput {
+    width: 42px;
+    height: 50px;
+    font-size: var(--typography-title-large-font-size);
+  }
+}

@@ -1,0 +1,370 @@
+/* ==========================================================================
+   LANDING PAGE LAYOUT
+   ========================================================================== */
+
+.landingPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   NAVIGATION BAR
+   ========================================================================== */
+
+.landingNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.landingNavBrand {
+  font-family: var(--typography-headline-small-font-family);
+  font-size: var(--typography-headline-small-font-size);
+  font-weight: var(--typography-headline-small-font-weight);
+  line-height: var(--typography-headline-small-line-height);
+  letter-spacing: var(--typography-headline-small-letter-spacing);
+  color: var(--color-brand-primary);
+  margin: 0;
+  text-decoration: none;
+}
+
+.landingNavActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.navLinkSecondary {
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: var(--typography-label-large-font-weight);
+  line-height: var(--typography-label-large-line-height);
+  letter-spacing: var(--typography-label-large-letter-spacing);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.navLinkSecondary:hover {
+  color: var(--color-text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.navLinkPrimary {
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: 600;
+  line-height: var(--typography-label-large-line-height);
+  letter-spacing: var(--typography-label-large-letter-spacing);
+  background: linear-gradient(135deg, #00e3aa 0%, #00b88a 100%);
+  color: #070c0e;
+  text-decoration: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: var(--effect-medium-shadow);
+}
+
+.navLinkPrimary:hover {
+  background: linear-gradient(135deg, #05f0b5 0%, #00c996 100%);
+  box-shadow: var(--effect-hard-shadow);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   HERO SECTION
+   ========================================================================== */
+
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 80px 24px 60px;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.heroSection::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(0, 227, 170, 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heroBadge {
+  font-family: var(--typography-label-medium-font-family);
+  font-size: var(--typography-label-medium-font-size);
+  font-weight: 600;
+  line-height: var(--typography-label-medium-line-height);
+  letter-spacing: 0.5px;
+  color: var(--color-brand-primary);
+  background: rgba(0, 227, 170, 0.1);
+  border: 1px solid rgba(0, 227, 170, 0.25);
+  border-radius: 9999px;
+  padding: 6px 16px;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.heroHeading {
+  font-family: var(--typography-display-medium-font-family);
+  font-size: var(--typography-display-medium-font-size);
+  font-weight: var(--typography-display-medium-font-weight);
+  line-height: var(--typography-display-medium-line-height);
+  letter-spacing: var(--typography-display-medium-letter-spacing);
+  color: var(--color-text-main);
+  margin: 24px 0 0;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.heroHeadingAccent {
+  background: linear-gradient(135deg, #00e3aa 0%, #00d4a0 50%, #00b88a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroSubtext {
+  font-family: var(--typography-body-large-font-family);
+  font-size: var(--typography-body-large-font-size);
+  font-weight: var(--typography-body-large-font-weight);
+  line-height: var(--typography-body-large-line-height);
+  letter-spacing: var(--typography-body-large-letter-spacing);
+  color: var(--color-text-muted);
+  margin: 16px 0 0;
+  max-width: 560px;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.heroActions {
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.heroActionPrimary {
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: 600;
+  line-height: var(--typography-label-large-line-height);
+  letter-spacing: var(--typography-label-large-letter-spacing);
+  background: linear-gradient(135deg, #00e3aa 0%, #00b88a 100%);
+  color: #070c0e;
+  text-decoration: none;
+  padding: 14px 32px;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: var(--effect-medium-shadow);
+}
+
+.heroActionPrimary:hover {
+  background: linear-gradient(135deg, #05f0b5 0%, #00c996 100%);
+  box-shadow: var(--effect-hard-shadow);
+  transform: translateY(-2px);
+}
+
+.heroActionSecondary {
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: 500;
+  line-height: var(--typography-label-large-line-height);
+  letter-spacing: var(--typography-label-large-letter-spacing);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-main);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-decoration: none;
+  padding: 14px 32px;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+.heroActionSecondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   FEATURES SECTION
+   ========================================================================== */
+
+.featuresSection {
+  padding: 60px 24px 80px;
+  max-width: 1080px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.featuresSectionTitle {
+  font-family: var(--typography-headline-large-font-family);
+  font-size: var(--typography-headline-large-font-size);
+  font-weight: var(--typography-headline-large-font-weight);
+  line-height: var(--typography-headline-large-line-height);
+  letter-spacing: var(--typography-headline-large-letter-spacing);
+  color: var(--color-text-main);
+  text-align: center;
+  margin: 0 0 48px;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.featureCard {
+  background: var(--color-surface-dark);
+  border: 1px solid var(--color-surface-border);
+  border-radius: 14px;
+  padding: 28px 24px;
+  box-shadow: var(--effect-soft-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.featureCard:hover {
+  border-color: rgba(0, 227, 170, 0.4);
+  box-shadow: var(--effect-medium-shadow);
+  transform: translateY(-4px);
+}
+
+.featureIcon {
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 227, 170, 0.1);
+  border: 1px solid rgba(0, 227, 170, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.featureTitle {
+  font-family: var(--typography-title-medium-font-family);
+  font-size: var(--typography-title-medium-font-size);
+  font-weight: var(--typography-title-medium-font-weight);
+  line-height: var(--typography-title-medium-line-height);
+  letter-spacing: var(--typography-title-medium-letter-spacing);
+  color: var(--color-text-main);
+  margin: 0;
+}
+
+.featureDesc {
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  font-weight: var(--typography-body-medium-font-weight);
+  line-height: var(--typography-body-medium-line-height);
+  letter-spacing: var(--typography-body-medium-letter-spacing);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+.landingFooter {
+  padding: 24px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: auto;
+}
+
+.footerText {
+  font-family: var(--typography-body-small-font-family);
+  font-size: var(--typography-body-small-font-size);
+  font-weight: var(--typography-body-small-font-weight);
+  line-height: var(--typography-body-small-line-height);
+  letter-spacing: var(--typography-body-small-letter-spacing);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  .heroSection {
+    padding: 48px 16px 40px;
+  }
+
+  .heroHeading {
+    font-size: var(--typography-display-small-font-size);
+    line-height: var(--typography-display-small-line-height);
+    letter-spacing: var(--typography-display-small-letter-spacing);
+  }
+
+  .heroActions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .heroActionPrimary,
+  .heroActionSecondary {
+    text-align: center;
+    width: 100%;
+  }
+
+  .landingNav {
+    padding: 16px;
+  }
+
+  .featuresSection {
+    padding: 40px 16px 60px;
+  }
+
+  .featuresSectionTitle {
+    font-size: var(--typography-headline-medium-font-size);
+    line-height: var(--typography-headline-medium-line-height);
+    letter-spacing: var(--typography-headline-medium-letter-spacing);
+  }
+}
