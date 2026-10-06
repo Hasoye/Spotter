@@ -132,22 +132,24 @@ export default function LandingPage() {
         </section>
       </header>
 
-      <section className="featuresSection" aria-label="Features">
-        <h2 className="featuresSectionTitle">
-          Everything you need, nothing you don&apos;t
-        </h2>
-        <div className="featuresGrid">
-          {FEATURES.map((feature) => (
-            <article className="featureCard" key={feature.title}>
-              <div className="featureIcon" aria-hidden="true">
-                {feature.icon}
-              </div>
-              <h3 className="featureTitle">{feature.title}</h3>
-              <p className="featureDesc">{feature.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      <div className="featuresSectionWrapper">
+        <section className="featuresSection" aria-label="Features">
+          <h2 className="featuresSectionTitle">
+            Everything you need, nothing you don&apos;t
+          </h2>
+          <div className="featuresGrid">
+            {FEATURES.map((feature) => (
+              <article className="featureCard" key={feature.title}>
+                <div className="featureIcon" aria-hidden="true">
+                  {feature.icon}
+                </div>
+                <h3 className="featureTitle">{feature.title}</h3>
+                <p className="featureDesc">{feature.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      </div>
 
       <footer className="landingFooter">
         <div className="landingFooterContent">
@@ -155,9 +157,9 @@ export default function LandingPage() {
             © 2026 Spotter. Built for members of the gym.
           </p>
           <div className="footerLinks">
-            <Link href="#" className="footerText footerLink">Privacy Policy</Link>
+            <Link href="/privacy" className="footerText footerLink">Privacy Policy</Link>
             <span className="footerText footerDot" aria-hidden="true">·</span>
-            <Link href="#" className="footerText footerLink">Terms of Service</Link>
+            <Link href="/terms" className="footerText footerLink">Terms of Service</Link>
           </div>
         </div>
       </footer>

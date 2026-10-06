@@ -78,7 +78,6 @@
 .navLinkPrimary:hover {
   background: var(--color-roles-on-primary-container);
   box-shadow: var(--effect-hard-shadow);
-  transform: translateY(-1px);
 }
 
 /* ==========================================================================
@@ -220,7 +219,6 @@
 .heroActionPrimary:hover {
   background: var(--color-roles-on-primary-container);
   box-shadow: var(--effect-hard-shadow);
-  transform: translateY(-2px);
 }
 
 .heroActionSecondary {
@@ -244,6 +242,11 @@
 /* ==========================================================================
    FEATURES SECTION
    ========================================================================== */
+
+.featuresSectionWrapper {
+  width: 100%;
+  background-color: var(--color-roles-surface-container-lowest);
+}
 
 .featuresSection {
   padding: 60px 24px 80px;
