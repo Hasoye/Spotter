@@ -78,44 +78,59 @@ const FEATURES = [
 export default function LandingPage() {
   return (
     <div className="landingPage">
-      <nav className="landingNav" aria-label="Main navigation">
-        <img src="/icon.svg" alt="SPOTTER" width="32" height="32" className="landingNavBrand" />
-        <div className="landingNavActions">
-          <Link href="/login" className="navLinkSecondary" id="nav-login">
-            Log In
-          </Link>
-          <Link href="/signup" className="navLinkPrimary" id="nav-signup">
-            Sign Up
-          </Link>
-        </div>
-      </nav>
-
-      <section className="heroSection" aria-label="Introduction">
-
-        <h1 className="heroHeading">
-          Your Gym, <span className="heroHeadingAccent">One Tap Away</span>
-        </h1>
-        <p className="heroSubtext">
-          Check in by QR code, ask about your balance or gym rules, and pay or
-          renew — all from your phone.
-        </p>
-        <div className="heroActions">
-          <Link
-            href="/signup"
-            className="heroActionPrimary"
-            id="hero-signup"
+      <header className="heroWrapper">
+        <div className="heroBackground" aria-hidden="true">
+          <video
+            className="heroVideo"
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster="/hero-fallback.jpg"
           >
-            Get Started
-          </Link>
-          <Link
-            href="/login"
-            className="heroActionSecondary"
-            id="hero-login"
-          >
-            Already a Member? Log In
-          </Link>
+            <source src="/hero-video.mp4" type="video/mp4" />
+          </video>
+          <div className="heroOverlay" />
         </div>
-      </section>
+
+        <nav className="landingNav" aria-label="Main navigation">
+          <img src="/icon.svg" alt="SPOTTER" width="32" height="32" className="landingNavBrand" />
+          <div className="landingNavActions">
+            <Link href="/login" className="navLinkSecondary" id="nav-login">
+              Log In
+            </Link>
+            <Link href="/signup" className="navLinkPrimary" id="nav-signup">
+              Sign Up
+            </Link>
+          </div>
+        </nav>
+
+        <section className="heroSection" aria-label="Introduction">
+          <h1 className="heroHeading">
+            Your Gym, <span className="heroHeadingAccent">One Tap Away</span>
+          </h1>
+          <p className="heroSubtext">
+            Check in by QR code, ask about your balance or gym rules,<br />
+            and pay or renew, all from your phone.
+          </p>
+          <div className="heroActions">
+            <Link
+              href="/signup"
+              className="heroActionPrimary"
+              id="hero-signup"
+            >
+              Get Started
+            </Link>
+            <Link
+              href="/login"
+              className="heroActionSecondary"
+              id="hero-login"
+            >
+              Already a Member? Log In
+            </Link>
+          </div>
+        </section>
+      </header>
 
       <section className="featuresSection" aria-label="Features">
         <h2 className="featuresSectionTitle">

@@ -21,6 +21,8 @@
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .landingNavBrand {
@@ -46,7 +48,8 @@
   font-weight: var(--typography-label-large-font-weight);
   line-height: var(--typography-label-large-line-height);
   letter-spacing: var(--typography-label-large-letter-spacing);
-  color: var(--color-roles-on-surface-variant);
+  color: var(--color-roles-on-surface);
+  background: var(--color-roles-surface-container-lowest);
   text-decoration: none;
   padding: 10px 18px;
   border-radius: 8px;
@@ -54,8 +57,7 @@
 }
 
 .navLinkSecondary:hover {
-  color: var(--color-roles-on-surface);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-roles-surface-container);
 }
 
 .navLinkPrimary {
@@ -83,15 +85,23 @@
    HERO SECTION
    ========================================================================== */
 
+.heroWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .heroSection {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 80px 24px 60px;
+  padding: 160px 24px 140px;
   max-width: 800px;
   margin: 0 auto;
   position: relative;
+  z-index: 1;
 }
 
 .heroSection::before {
@@ -108,10 +118,48 @@
     transparent 70%
   );
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
 }
 
+.heroBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  background-color: var(--color-roles-background);
+}
 
+.heroVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--color-roles-on-background) 75%, transparent) 0%, transparent 65%),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-roles-on-background) 55%, transparent) 0%, transparent 35%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroVideo {
+    display: none;
+  }
+  .heroBackground {
+    background-image: url('/hero-fallback.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+}
 
 .heroHeading {
   font-family: var(--typography-display-medium-font-family);
@@ -119,7 +167,7 @@
   font-weight: var(--typography-display-medium-font-weight);
   line-height: var(--typography-display-medium-line-height);
   letter-spacing: var(--typography-display-medium-letter-spacing);
-  color: var(--color-roles-on-background);
+  color: var(--color-roles-surface-container-lowest);
   margin: 24px 0 0;
   position: relative;
   z-index: 1;
@@ -127,10 +175,8 @@
 }
 
 .heroHeadingAccent {
-  background: linear-gradient(135deg, var(--color-roles-primary) 0%, var(--color-roles-primary) 50%, var(--color-roles-primary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-roles-surface-container-lowest);
+  padding-right: 0.15em;
 }
 
 .heroSubtext {
@@ -139,7 +185,7 @@
   font-weight: var(--typography-body-large-font-weight);
   line-height: var(--typography-body-large-line-height);
   letter-spacing: var(--typography-body-large-letter-spacing);
-  color: var(--color-roles-on-surface-variant);
+  color: var(--color-roles-surface-container-lowest);
   margin: 16px 0 0;
   max-width: 560px;
   position: relative;
@@ -183,9 +229,8 @@
   font-weight: 500;
   line-height: var(--typography-label-large-line-height);
   letter-spacing: var(--typography-label-large-letter-spacing);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-roles-surface-container-lowest);
   color: var(--color-roles-on-surface);
-  border: 1px solid rgba(255, 255, 255, 0.12);
   text-decoration: none;
   padding: 14px 32px;
   border-radius: 10px;
@@ -193,8 +238,7 @@
 }
 
 .heroActionSecondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: var(--color-roles-surface-container);
   transform: translateY(-1px);
 }
 
@@ -212,7 +256,7 @@
 .featuresSectionTitle {
   font-family: var(--typography-headline-large-font-family);
   font-size: var(--typography-headline-large-font-size);
-  font-weight: var(--typography-headline-large-font-weight);
+  font-weight: var(--typography-display-small-font-weight);
   line-height: var(--typography-headline-large-line-height);
   letter-spacing: var(--typography-headline-large-letter-spacing);
   color: var(--color-roles-on-surface);
@@ -227,8 +271,7 @@
 }
 
 .featureCard {
-  background: var(--color-roles-surface);
-  border: 1px solid var(--color-roles-outline);
+  background: var(--color-roles-surface-container);
   border-radius: 14px;
   padding: 28px 24px;
   box-shadow: var(--effect-soft-shadow);
@@ -239,7 +282,6 @@
 }
 
 .featureCard:hover {
-  border-color: color-mix(in srgb, var(--color-roles-primary) 40%, transparent);
   box-shadow: var(--effect-medium-shadow);
   transform: translateY(-4px);
 }
@@ -257,11 +299,11 @@
 }
 
 .featureTitle {
-  font-family: var(--typography-title-medium-font-family);
-  font-size: var(--typography-title-medium-font-size);
-  font-weight: var(--typography-title-medium-font-weight);
-  line-height: var(--typography-title-medium-line-height);
-  letter-spacing: var(--typography-title-medium-letter-spacing);
+  font-family: var(--typography-title-large-font-family);
+  font-size: var(--typography-title-large-font-size);
+  font-weight: var(--typography-display-small-font-weight);
+  line-height: var(--typography-title-large-line-height);
+  letter-spacing: var(--typography-title-large-letter-spacing);
   color: var(--color-roles-on-surface);
   margin: 0;
 }
@@ -318,7 +360,7 @@
 
 @media (max-width: 640px) {
   .heroSection {
-    padding: 48px 16px 40px;
+    padding: 100px 16px 80px;
   }
 
   .heroHeading {
