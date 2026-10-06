@@ -66,7 +66,7 @@
   font-weight: 600;
   line-height: var(--typography-label-large-line-height);
   letter-spacing: var(--typography-label-large-letter-spacing);
-  background: linear-gradient(135deg, var(--color-roles-primary) 0%, var(--color-roles-primary) 100%);
+  background: var(--color-roles-primary);
   color: var(--color-roles-on-primary);
   text-decoration: none;
   padding: 10px 22px;
@@ -76,7 +76,7 @@
 }
 
 .navLinkPrimary:hover {
-  background: linear-gradient(135deg, #05f0b5 0%, var(--color-roles-primary) 100%);
+  background: var(--color-roles-on-primary-container);
   box-shadow: var(--effect-hard-shadow);
   transform: translateY(-1px);
 }
@@ -208,7 +208,7 @@
   font-weight: 600;
   line-height: var(--typography-label-large-line-height);
   letter-spacing: var(--typography-label-large-letter-spacing);
-  background: linear-gradient(135deg, var(--color-roles-primary) 0%, var(--color-roles-primary) 100%);
+  background: var(--color-roles-primary);
   color: var(--color-roles-on-primary);
   text-decoration: none;
   padding: 14px 32px;
@@ -218,7 +218,7 @@
 }
 
 .heroActionPrimary:hover {
-  background: linear-gradient(135deg, #05f0b5 0%, var(--color-roles-primary) 100%);
+  background: var(--color-roles-on-primary-container);
   box-shadow: var(--effect-hard-shadow);
   transform: translateY(-2px);
 }
@@ -239,7 +239,6 @@
 
 .heroActionSecondary:hover {
   background: var(--color-roles-surface-container);
-  transform: translateY(-1px);
 }
 
 /* ==========================================================================
@@ -271,19 +270,13 @@
 }
 
 .featureCard {
-  background: var(--color-roles-surface-container);
+  background: var(--color-roles-surface);
   border-radius: 14px;
   padding: 28px 24px;
   box-shadow: var(--effect-soft-shadow);
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: all 0.3s ease;
-}
-
-.featureCard:hover {
-  box-shadow: var(--effect-medium-shadow);
-  transform: translateY(-4px);
 }
 
 .featureIcon {
