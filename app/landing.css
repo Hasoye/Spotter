@@ -324,9 +324,17 @@
 
 .landingFooter {
   padding: 24px;
-  text-align: center;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   margin-top: auto;
+}
+
+.landingFooterContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .footerText {
@@ -337,6 +345,25 @@
   letter-spacing: var(--typography-body-small-letter-spacing);
   color: var(--color-roles-on-surface-variant);
   margin: 0;
+}
+
+.footerLinks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footerLink {
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footerLink:hover {
+  color: var(--color-roles-on-surface);
+}
+
+.footerDot {
+  opacity: 0.5;
 }
 
 /* ==========================================================================
@@ -393,5 +420,11 @@
     font-size: var(--typography-headline-medium-font-size);
     line-height: var(--typography-headline-medium-line-height);
     letter-spacing: var(--typography-headline-medium-letter-spacing);
+  }
+
+  .landingFooterContent {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
   }
 }

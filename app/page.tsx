@@ -150,9 +150,16 @@ export default function LandingPage() {
       </section>
 
       <footer className="landingFooter">
-        <p className="footerText">
-          © {new Date().getFullYear()} Spotter. Built for members of the gym.
-        </p>
+        <div className="landingFooterContent">
+          <p className="footerText">
+            © 2026 Spotter. Built for members of the gym.
+          </p>
+          <div className="footerLinks">
+            <Link href="#" className="footerText footerLink">Privacy Policy</Link>
+            <span className="footerText footerDot" aria-hidden="true">·</span>
+            <Link href="#" className="footerText footerLink">Terms of Service</Link>
+          </div>
+        </div>
       </footer>
     </div>
   );
