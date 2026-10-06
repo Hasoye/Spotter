@@ -112,7 +112,7 @@ export default function LandingPage({
 
         <section className="heroSection" aria-label="Introduction">
           <h1 className="heroHeading">
-            Your Gym, <span className="heroHeadingAccent">One Tap Away</span>
+            Your Gym, <span className="heroHeadingAccent">One<br />Tap Away</span>
           </h1>
           <p className="heroSubtext">
             Check in by QR code, ask about your balance or gym rules,
@@ -125,13 +125,6 @@ export default function LandingPage({
               id="hero-signup"
             >
               Get Started
-            </Link>
-            <Link
-              href="/login"
-              className="heroActionSecondary"
-              id="hero-login"
-            >
-              Already a Member? Log In
             </Link>
           </div>
         </section>
