@@ -201,7 +201,7 @@
   --typography-display-large-font-weight: 600;
   --typography-display-large-font-style: normal;
   --typography-display-large-font-stretch: normal;
-  --typography-display-large-letter-spacing: -3.5px;
+  --typography-display-large-letter-spacing: -2.5px;
   --typography-display-large-line-height: 96px;
   --typography-display-large-paragraph-indent: 0;
   --typography-display-large-paragraph-spacing: 0;
@@ -212,7 +212,7 @@
   --typography-display-medium-font-weight: 600;
   --typography-display-medium-font-style: normal;
   --typography-display-medium-font-stretch: normal;
-  --typography-display-medium-letter-spacing: -3px;
+  --typography-display-medium-letter-spacing: -2px;
   --typography-display-medium-line-height: 75px;
   --typography-display-medium-paragraph-indent: 0;
   --typography-display-medium-paragraph-spacing: 0;
@@ -223,7 +223,7 @@
   --typography-display-small-font-weight: 600;
   --typography-display-small-font-style: normal;
   --typography-display-small-font-stretch: normal;
-  --typography-display-small-letter-spacing: -2px;
+  --typography-display-small-letter-spacing: -1px;
   --typography-display-small-line-height: 60px;
   --typography-display-small-paragraph-indent: 0;
   --typography-display-small-paragraph-spacing: 0;
@@ -234,7 +234,7 @@
   --typography-headline-large-font-weight: 500;
   --typography-headline-large-font-style: normal;
   --typography-headline-large-font-stretch: normal;
-  --typography-headline-large-letter-spacing: -1.5px;
+  --typography-headline-large-letter-spacing: -0.5px;
   --typography-headline-large-line-height: 48px;
   --typography-headline-large-paragraph-indent: 0;
   --typography-headline-large-paragraph-spacing: 0;
@@ -245,7 +245,7 @@
   --typography-headline-medium-font-weight: 500;
   --typography-headline-medium-font-style: normal;
   --typography-headline-medium-font-stretch: normal;
-  --typography-headline-medium-letter-spacing: -2px;
+  --typography-headline-medium-letter-spacing: -1px;
   --typography-headline-medium-line-height: 42px;
   --typography-headline-medium-paragraph-indent: 0;
   --typography-headline-medium-paragraph-spacing: 0;
@@ -256,7 +256,7 @@
   --typography-headline-small-font-weight: 500;
   --typography-headline-small-font-style: normal;
   --typography-headline-small-font-stretch: normal;
-  --typography-headline-small-letter-spacing: -1.4px;
+  --typography-headline-small-letter-spacing: -0.5px;
   --typography-headline-small-line-height: 36px;
   --typography-headline-small-paragraph-indent: 0;
   --typography-headline-small-paragraph-spacing: 0;
@@ -267,7 +267,7 @@
   --typography-title-large-font-weight: 500;
   --typography-title-large-font-style: normal;
   --typography-title-large-font-stretch: normal;
-  --typography-title-large-letter-spacing: -1px;
+  --typography-title-large-letter-spacing: -0.2px;
   --typography-title-large-line-height: 33px;
   --typography-title-large-paragraph-indent: 0;
   --typography-title-large-paragraph-spacing: 0;
@@ -278,7 +278,7 @@
   --typography-title-medium-font-weight: 500;
   --typography-title-medium-font-style: normal;
   --typography-title-medium-font-stretch: normal;
-  --typography-title-medium-letter-spacing: -1px;
+  --typography-title-medium-letter-spacing: -0.2px;
   --typography-title-medium-line-height: 24px;
   --typography-title-medium-paragraph-indent: 0;
   --typography-title-medium-paragraph-spacing: 0;
@@ -289,7 +289,7 @@
   --typography-title-small-font-weight: 500;
   --typography-title-small-font-style: normal;
   --typography-title-small-font-stretch: normal;
-  --typography-title-small-letter-spacing: -0.9px;
+  --typography-title-small-letter-spacing: -0.1px;
   --typography-title-small-line-height: 21px;
   --typography-title-small-paragraph-indent: 0;
   --typography-title-small-paragraph-spacing: 0;
@@ -300,7 +300,7 @@
   --typography-body-large-font-weight: 500;
   --typography-body-large-font-style: normal;
   --typography-body-large-font-stretch: normal;
-  --typography-body-large-letter-spacing: -0.85px;
+  --typography-body-large-letter-spacing: 0px;
   --typography-body-large-line-height: 24px;
   --typography-body-large-paragraph-indent: 0;
   --typography-body-large-paragraph-spacing: 0;
@@ -311,7 +311,7 @@
   --typography-body-medium-font-weight: 500;
   --typography-body-medium-font-style: normal;
   --typography-body-medium-font-stretch: normal;
-  --typography-body-medium-letter-spacing: -0.85px;
+  --typography-body-medium-letter-spacing: 0px;
   --typography-body-medium-line-height: 21px;
   --typography-body-medium-paragraph-indent: 0;
   --typography-body-medium-paragraph-spacing: 0;
@@ -322,7 +322,7 @@
   --typography-body-small-font-weight: 500;
   --typography-body-small-font-style: normal;
   --typography-body-small-font-stretch: normal;
-  --typography-body-small-letter-spacing: -0.4px;
+  --typography-body-small-letter-spacing: 0.2px;
   --typography-body-small-line-height: 18px;
   --typography-body-small-paragraph-indent: 0;
   --typography-body-small-paragraph-spacing: 0;
@@ -333,7 +333,7 @@
   --typography-label-large-font-weight: 500;
   --typography-label-large-font-style: normal;
   --typography-label-large-font-stretch: normal;
-  --typography-label-large-letter-spacing: -0.85px;
+  --typography-label-large-letter-spacing: 0px;
   --typography-label-large-line-height: 21px;
   --typography-label-large-paragraph-indent: 0;
   --typography-label-large-paragraph-spacing: 0;
@@ -344,7 +344,7 @@
   --typography-label-medium-font-weight: 500;
   --typography-label-medium-font-style: normal;
   --typography-label-medium-font-stretch: normal;
-  --typography-label-medium-letter-spacing: -0.85px;
+  --typography-label-medium-letter-spacing: 0px;
   --typography-label-medium-line-height: 18px;
   --typography-label-medium-paragraph-indent: 0;
   --typography-label-medium-paragraph-spacing: 0;
@@ -355,7 +355,7 @@
   --typography-label-small-font-weight: 500;
   --typography-label-small-font-style: normal;
   --typography-label-small-font-stretch: normal;
-  --typography-label-small-letter-spacing: -0.4px;
+  --typography-label-small-letter-spacing: 0.2px;
   --typography-label-small-line-height: 16.5px;
   --typography-label-small-paragraph-indent: 0;
   --typography-label-small-paragraph-spacing: 0;

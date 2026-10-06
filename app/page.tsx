@@ -115,7 +115,7 @@ export default function LandingPage({
             Your Gym, <span className="heroHeadingAccent">One Tap Away</span>
           </h1>
           <p className="heroSubtext">
-            Check in by QR code, ask about your balance or gym rules,<br />
+            Check in by QR code, ask about your balance or gym rules,
             and pay or renew, all from your phone.
           </p>
           <div className="heroActions">

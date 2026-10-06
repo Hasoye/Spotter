@@ -194,8 +194,8 @@
 .heroSubtext {
   font-family: var(--typography-title-large-font-family);
   font-size: var(--typography-title-large-font-size);
-  font-weight: var(--typography-title-large-font-weight);
-  line-height: var(--typography-title-large-line-height);
+  font-weight: 400;
+  line-height: 1.4;
   letter-spacing: var(--typography-title-large-letter-spacing);
   color: var(--color-roles-surface-container-lowest);
   margin: 16px 0 0;
@@ -258,7 +258,7 @@
 
 .featuresSectionWrapper {
   width: 100%;
-  background-color: var(--color-roles-surface-container-lowest);
+  background-color: var(--color-roles-surface-container-low);
 }
 
 .featuresSection {
@@ -401,8 +401,12 @@
 
   .heroHeading {
     font-size: var(--typography-display-small-font-size);
-    line-height: var(--typography-display-small-line-height);
+    line-height: 1.15;
     letter-spacing: var(--typography-display-small-letter-spacing);
+  }
+
+  .heroSubtext {
+    line-height: 1.35;
   }
 
   .heroActions {
