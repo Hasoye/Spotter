@@ -42,6 +42,19 @@
   align-items: center;
 }
 
+.hamburgerMenu {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--color-roles-on-surface);
+  cursor: pointer;
+  padding: 8px;
+}
+
+.mobileMenuClose {
+  display: none;
+}
+
 .navLinkSecondary {
   font-family: var(--typography-label-large-font-family);
   font-size: var(--typography-label-large-font-size);
@@ -161,11 +174,11 @@
 }
 
 .heroHeading {
-  font-family: var(--typography-display-medium-font-family);
-  font-size: var(--typography-display-medium-font-size);
-  font-weight: var(--typography-display-medium-font-weight);
-  line-height: var(--typography-display-medium-line-height);
-  letter-spacing: var(--typography-display-medium-letter-spacing);
+  font-family: var(--typography-display-large-font-family);
+  font-size: var(--typography-display-large-font-size);
+  font-weight: var(--typography-display-large-font-weight);
+  line-height: var(--typography-display-large-line-height);
+  letter-spacing: var(--typography-display-large-letter-spacing);
   color: var(--color-roles-surface-container-lowest);
   margin: 24px 0 0;
   position: relative;
@@ -179,11 +192,11 @@
 }
 
 .heroSubtext {
-  font-family: var(--typography-body-large-font-family);
-  font-size: var(--typography-body-large-font-size);
-  font-weight: var(--typography-body-large-font-weight);
-  line-height: var(--typography-body-large-line-height);
-  letter-spacing: var(--typography-body-large-letter-spacing);
+  font-family: var(--typography-title-large-font-family);
+  font-size: var(--typography-title-large-font-size);
+  font-weight: var(--typography-title-large-font-weight);
+  line-height: var(--typography-title-large-line-height);
+  letter-spacing: var(--typography-title-large-letter-spacing);
   color: var(--color-roles-surface-container-lowest);
   margin: 16px 0 0;
   max-width: 560px;
@@ -202,11 +215,11 @@
 }
 
 .heroActionPrimary {
-  font-family: var(--typography-label-large-font-family);
-  font-size: var(--typography-label-large-font-size);
-  font-weight: 600;
-  line-height: var(--typography-label-large-line-height);
-  letter-spacing: var(--typography-label-large-letter-spacing);
+  font-family: var(--typography-title-medium-font-family);
+  font-size: var(--typography-title-medium-font-size);
+  font-weight: var(--typography-title-medium-font-weight);
+  line-height: var(--typography-title-medium-line-height);
+  letter-spacing: var(--typography-title-medium-letter-spacing);
   background: var(--color-roles-primary);
   color: var(--color-roles-on-primary);
   text-decoration: none;
@@ -222,11 +235,11 @@
 }
 
 .heroActionSecondary {
-  font-family: var(--typography-label-large-font-family);
-  font-size: var(--typography-label-large-font-size);
-  font-weight: 500;
-  line-height: var(--typography-label-large-line-height);
-  letter-spacing: var(--typography-label-large-letter-spacing);
+  font-family: var(--typography-title-medium-font-family);
+  font-size: var(--typography-title-medium-font-size);
+  font-weight: var(--typography-title-medium-font-weight);
+  line-height: var(--typography-title-medium-line-height);
+  letter-spacing: var(--typography-title-medium-letter-spacing);
   background: var(--color-roles-surface-container-lowest);
   color: var(--color-roles-on-surface);
   text-decoration: none;
@@ -408,6 +421,51 @@
     padding: 16px;
   }
 
+  .hamburgerMenu {
+    display: block;
+    z-index: 100;
+    color: #ffffff; /* White icon for accessibility over video background */
+  }
+  
+  .mobileMenuClose {
+    display: block;
+    align-self: flex-end;
+    background: transparent;
+    border: none;
+    color: var(--color-roles-on-surface);
+    cursor: pointer;
+    padding: 8px;
+    margin-bottom: 24px;
+  }
+
+  .landingNavActions {
+    display: flex;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    z-index: 1000;
+    background: var(--color-roles-surface-container-lowest);
+    border-radius: 0;
+    padding: 24px;
+    flex-direction: column;
+    box-shadow: none;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .landingNavActions.open {
+    transform: translateX(0);
+  }
+
+  .landingNavActions > a {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
   .featuresSection {
     padding: 40px 16px 60px;
   }
@@ -423,4 +481,75 @@
     gap: 12px;
     text-align: center;
   }
+}
+
+.legalPage {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+  color: var(--color-roles-on-surface);
+  min-height: 100vh;
+}
+
+.legalHeader {
+  margin-bottom: 48px;
+  border-bottom: 1px solid var(--color-roles-outline-variant);
+  padding-bottom: 24px;
+}
+
+.legalBackLink {
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: var(--typography-label-large-font-weight);
+  color: var(--color-roles-primary);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 24px;
+  transition: opacity 0.2s;
+}
+
+.legalBackLink:hover {
+  opacity: 0.8;
+}
+
+.legalTitle {
+  font-family: var(--typography-display-small-font-family);
+  font-size: var(--typography-display-small-font-size);
+  font-weight: var(--typography-display-small-font-weight);
+  margin: 0 0 12px;
+}
+
+.legalLastUpdated {
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-roles-on-surface-variant);
+  margin: 0;
+}
+
+.legalContent {
+  font-family: var(--typography-body-large-font-family);
+  font-size: var(--typography-body-large-font-size);
+  line-height: var(--typography-body-large-line-height);
+  color: var(--color-roles-on-surface);
+}
+
+.legalContent h2 {
+  font-family: var(--typography-title-large-font-family);
+  font-size: var(--typography-title-large-font-size);
+  font-weight: var(--typography-title-large-font-weight);
+  margin: 40px 0 16px;
+  color: var(--color-roles-on-surface);
+}
+
+.legalContent p {
+  margin: 0 0 20px;
+}
+
+.legalContent ul {
+  margin: 0 0 24px;
+  padding-left: 24px;
+}
+
+.legalContent li {
+  margin-bottom: 12px;
 }
