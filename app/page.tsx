@@ -129,7 +129,7 @@ export default function LandingPage({
           </p>
           <div className="heroActions">
             <Link
-              href="/signup"
+              href="/auth?mode=signup"
               className="heroActionPrimary"
               id="hero-signup"
             >

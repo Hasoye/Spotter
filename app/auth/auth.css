@@ -1,0 +1,208 @@
+﻿.authPage {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--color-roles-surface-container-lowest);
+}
+
+.authCard {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border: 1px solid color-mix(in srgb, var(--color-roles-outline) 30%, transparent);
+  border-radius: 12px;
+  box-shadow: var(--elevation-1);
+  padding: 32px 24px;
+}
+
+.authHeader {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.authTitle {
+  margin: 16px 0 8px;
+  font-family: var(--typography-headline-medium-font-family);
+  font-size: var(--typography-headline-medium-font-size);
+  font-weight: var(--typography-headline-medium-font-weight);
+  line-height: var(--typography-headline-medium-line-height);
+  letter-spacing: var(--typography-headline-medium-letter-spacing);
+  color: var(--color-roles-on-surface);
+}
+
+.authSubtitle {
+  margin: 0;
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+  color: var(--color-roles-on-surface-variant);
+}
+
+.authTabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 16px 0 20px;
+  padding: 4px;
+  background: var(--color-roles-surface-container);
+  border-radius: 10px;
+}
+
+.authTab {
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--color-roles-on-surface-variant);
+  cursor: pointer;
+}
+
+.authTabActive {
+  background: #ffffff;
+  color: var(--color-roles-on-surface);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.authAlert {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-roles-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-roles-primary) 30%, transparent);
+}
+
+.authAlertError {
+  background: color-mix(in srgb, #dc2626 10%, transparent);
+  border-color: color-mix(in srgb, #dc2626 40%, transparent);
+}
+
+.authAlertText {
+  margin: 0;
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-roles-on-surface);
+}
+
+.authOtpHint {
+  margin: 0;
+  font-size: var(--typography-body-small-font-size);
+  color: var(--color-roles-on-surface-variant);
+  word-break: break-all;
+}
+
+.authSuccessIcon {
+  width: 48px;
+  height: 48px;
+  margin: 8px auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, #16a34a 15%, transparent);
+  color: #16a34a;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.otpInputRow {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.otpDigitInput {
+  width: 44px;
+  height: 52px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--color-roles-outline) 40%, transparent);
+  background: #ffffff;
+  color: var(--color-roles-on-surface);
+}
+
+.otpDigitFilled {
+  border-color: var(--color-roles-primary);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-roles-primary) 25%, transparent);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldLabel {
+  font-weight: 600;
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-roles-on-surface);
+}
+
+.fieldErrorText {
+  color: #dc2626;
+  font-size: var(--typography-body-small-font-size);
+}
+
+.resendRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.resendText {
+  font-size: var(--typography-body-small-font-size);
+  color: var(--color-roles-on-surface-variant);
+}
+
+.resendButton {
+  background: transparent;
+  border: none;
+  color: var(--color-roles-primary);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: var(--typography-body-small-font-size);
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.checkboxText {
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-roles-on-surface);
+  line-height: 1.4;
+}
+
+.checkboxText a {
+  color: var(--color-roles-primary);
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .authCard {
+    padding: 24px 20px;
+    border-radius: 10px;
+  }
+  .otpDigitInput {
+    width: 40px;
+    height: 48px;
+  }
+}
