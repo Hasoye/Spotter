@@ -19,6 +19,7 @@ type FieldErrors = {
   email?: string;
   memberNumber?: string;
   phoneNumber?: string;
+  password?: string;
   otpCode?: string;
   termsAccepted?: string;
   form?: string;
@@ -26,6 +27,8 @@ type FieldErrors = {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MEMBER_NUMBER_LENGTH = 6;
+const PASSWORD_MIN_LENGTH = 8;
+const PASSWORD_HINT = `Must be at least ${PASSWORD_MIN_LENGTH} characters.`;
 
 const validateFullName = (value: string): string | undefined => {
   const trimmed = value.trim();
@@ -64,7 +67,20 @@ const validatePhoneNumber = (value: string): string | undefined => {
   return undefined;
 };
 
-type SignupField = "fullName" | "email" | "memberNumber" | "phoneNumber";
+const validatePassword = (value: string): string | undefined => {
+  if (!value) return EMPTY_FIELD_ERROR;
+  if (value.length < PASSWORD_MIN_LENGTH) {
+    return `Password must be at least ${PASSWORD_MIN_LENGTH} characters.`;
+  }
+  return undefined;
+};
+
+type SignupField =
+  | "fullName"
+  | "email"
+  | "memberNumber"
+  | "phoneNumber"
+  | "password";
 
 const validateSignupField = (
   field: SignupField,
@@ -79,6 +95,8 @@ const validateSignupField = (
       return validateMemberNumber(value);
     case "phoneNumber":
       return validatePhoneNumber(value);
+    case "password":
+      return validatePassword(value);
   }
 };
 
@@ -94,7 +112,7 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
   const [email, setEmail] = useState("");
   const [memberNumber, setMemberNumber] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [tier, setTier] = useState<"BASIC" | "PREMIUM">("BASIC");
+  const [password, setPassword] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [otpDigits, setOtpDigits] = useState<string[]>(Array(6).fill(""));
 
@@ -275,8 +293,12 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
     e.preventDefault();
 
     const phoneError = validatePhoneNumber(phoneNumber);
-    if (phoneError) {
-      setErrors({ phoneNumber: phoneError });
+    const passwordError = validatePassword(password);
+    const newErrors: FieldErrors = {};
+    if (phoneError) newErrors.phoneNumber = phoneError;
+    if (passwordError) newErrors.password = passwordError;
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -293,11 +315,13 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
     const emailError = validateEmail(email);
     const memberNumberError = validateMemberNumber(memberNumber);
     const phoneError = validatePhoneNumber(phoneNumber);
+    const passwordError = validatePassword(password);
 
     if (nameError) newErrors.fullName = nameError;
     if (emailError) newErrors.email = emailError;
     if (memberNumberError) newErrors.memberNumber = memberNumberError;
     if (phoneError) newErrors.phoneNumber = phoneError;
+    if (passwordError) newErrors.password = passwordError;
     if (!termsAccepted) newErrors.termsAccepted = EMPTY_FIELD_ERROR;
 
     setErrors(newErrors);
@@ -328,6 +352,7 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           phoneNumber: phoneNumber.trim(),
+          password,
           otpCode: code,
         }),
       });
@@ -371,7 +396,7 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
         body: JSON.stringify({
           fullName: fullName.trim(),
           phoneNumber: phoneNumber.trim(),
-          tier,
+          password,
           otpCode: code,
         }),
       });
@@ -501,6 +526,24 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
                   required
                   disabled={isLoading}
                   autoComplete="tel"
+                />
+
+                <Input
+                  id="loginPassword"
+                  label="Password"
+                  type="password"
+                  placeholder="Your password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    clearFieldError("password");
+                  }}
+                  onBlur={(e) => handleBlur("password", e.target.value)}
+                  error={errors.password}
+                  hint={password ? PASSWORD_HINT : undefined}
+                  required
+                  disabled={isLoading}
+                  autoComplete="current-password"
                 />
 
                 <Button type="submit" isLoading={isLoading} id="login-send-otp">
@@ -674,18 +717,22 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
                   autoComplete="off"
                 />
 
-                <Select
-                  id="tier"
-                  label="Membership Tier"
-                  value={tier}
-                  onChange={(e) =>
-                    setTier(e.target.value as "BASIC" | "PREMIUM")
-                  }
-                  options={[
-                    { value: "BASIC", label: "Basic Tier" },
-                    { value: "PREMIUM", label: "Premium Tier" },
-                  ]}
+                <Input
+                  id="password"
+                  label="Password"
+                  type="password"
+                  placeholder="Create a password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    clearFieldError("password");
+                  }}
+                  onBlur={(e) => handleBlur("password", e.target.value)}
+                  error={errors.password}
+                  hint={password ? PASSWORD_HINT : undefined}
+                  required
                   disabled={isLoading}
+                  autoComplete="new-password"
                 />
 
                 <div className="authCheckboxGroup">
