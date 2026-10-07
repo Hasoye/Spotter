@@ -16,11 +16,16 @@ const EMPTY_FIELD_ERROR = "This field must not be empty";
 
 type FieldErrors = {
   fullName?: string;
+  email?: string;
+  memberNumber?: string;
   phoneNumber?: string;
   otpCode?: string;
   termsAccepted?: string;
   form?: string;
 };
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MEMBER_NUMBER_LENGTH = 6;
 
 const validateFullName = (value: string): string | undefined => {
   const trimmed = value.trim();
@@ -34,6 +39,22 @@ const validateFullName = (value: string): string | undefined => {
   return undefined;
 };
 
+const validateEmail = (value: string): string | undefined => {
+  const trimmed = value.trim();
+  if (!trimmed) return EMPTY_FIELD_ERROR;
+  if (!EMAIL_PATTERN.test(trimmed)) return "Enter a valid email address";
+  return undefined;
+};
+
+const validateMemberNumber = (value: string): string | undefined => {
+  const digits = value.replace(/\D/g, "");
+  if (!digits) return EMPTY_FIELD_ERROR;
+  if (digits.length !== MEMBER_NUMBER_LENGTH) {
+    return `Member number must be exactly ${MEMBER_NUMBER_LENGTH} digits.`;
+  }
+  return undefined;
+};
+
 const validatePhoneNumber = (value: string): string | undefined => {
   const cleaned = value.replace(/[\s-]/g, "");
   if (!cleaned) return EMPTY_FIELD_ERROR;
@@ -41,6 +62,24 @@ const validatePhoneNumber = (value: string): string | undefined => {
     return "Please enter a valid phone number (at least 10 digits).";
   }
   return undefined;
+};
+
+type SignupField = "fullName" | "email" | "memberNumber" | "phoneNumber";
+
+const validateSignupField = (
+  field: SignupField,
+  value: string
+): string | undefined => {
+  switch (field) {
+    case "fullName":
+      return validateFullName(value);
+    case "email":
+      return validateEmail(value);
+    case "memberNumber":
+      return validateMemberNumber(value);
+    case "phoneNumber":
+      return validatePhoneNumber(value);
+  }
 };
 
 export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
@@ -52,6 +91,8 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
   const [signupStep, setSignupStep] = useState<SignupStep>("REGISTER");
 
   const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [memberNumber, setMemberNumber] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [tier, setTier] = useState<"BASIC" | "PREMIUM">("BASIC");
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -89,21 +130,7 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
     setDevHint(null);
   };
 
-  const clearFieldError = (field: "fullName" | "phoneNumber") => {
-    setErrors((prev) => {
-      if (!prev[field]) return prev;
-      const next = { ...prev };
-      delete next[field];
-      return next;
-    });
-  };
-
-  const handleBlur = (field: "fullName" | "phoneNumber", value: string) => {
-    const error =
-      field === "fullName"
-        ? validateFullName(value)
-        : validatePhoneNumber(value);
-
+  const setFieldError = (field: SignupField, error?: string) => {
     setErrors((prev) => {
       const next = { ...prev };
       if (error) {
@@ -113,6 +140,39 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
       }
       return next;
     });
+  };
+
+  const clearFieldError = (field: SignupField) => {
+    setErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  };
+
+  const handleBlur = (field: SignupField, value: string) => {
+    setFieldError(field, validateSignupField(field, value));
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+
+    if (!value.trim()) {
+      clearFieldError("email");
+      return;
+    }
+
+    setFieldError(
+      "email",
+      EMAIL_PATTERN.test(value.trim()) ? undefined : "Enter a valid email address"
+    );
+  };
+
+  const handleMemberNumberChange = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, MEMBER_NUMBER_LENGTH);
+    setMemberNumber(digits);
+    clearFieldError("memberNumber");
   };
 
   const switchMode = (next: AuthMode) => {
@@ -230,9 +290,13 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
 
     const newErrors: FieldErrors = {};
     const nameError = validateFullName(fullName);
+    const emailError = validateEmail(email);
+    const memberNumberError = validateMemberNumber(memberNumber);
     const phoneError = validatePhoneNumber(phoneNumber);
 
     if (nameError) newErrors.fullName = nameError;
+    if (emailError) newErrors.email = emailError;
+    if (memberNumberError) newErrors.memberNumber = memberNumberError;
     if (phoneError) newErrors.phoneNumber = phoneError;
     if (!termsAccepted) newErrors.termsAccepted = EMPTY_FIELD_ERROR;
 
@@ -560,6 +624,21 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
                 />
 
                 <Input
+                  id="email"
+                  label="Email Address"
+                  type="email"
+                  placeholder="e.g. bisi@example.com"
+                  value={email}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  onBlur={(e) => handleBlur("email", e.target.value)}
+                  error={errors.email}
+                  hint="Used for account notices."
+                  required
+                  disabled={isLoading}
+                  autoComplete="email"
+                />
+
+                <Input
                   id="signupPhoneNumber"
                   label="Phone Number"
                   type="tel"
@@ -575,6 +654,24 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
                   required
                   disabled={isLoading}
                   autoComplete="tel"
+                />
+
+                <Input
+                  id="memberNumber"
+                  label="Member Number"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={MEMBER_NUMBER_LENGTH}
+                  placeholder="6-digit member number"
+                  value={memberNumber}
+                  onChange={(e) => handleMemberNumberChange(e.target.value)}
+                  onBlur={(e) => handleBlur("memberNumber", e.target.value)}
+                  error={errors.memberNumber}
+                  hint="The 6-digit number on your gym membership card."
+                  required
+                  disabled={isLoading}
+                  autoComplete="off"
                 />
 
                 <Select
