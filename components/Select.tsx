@@ -36,7 +36,7 @@ export const Select: React.FC<SelectProps> = ({
         {label}
       </label>
       {hint && (
-        <span id={hintId} className="fieldErrorText">
+        <span id={hintId} className="fieldHintText">
           {hint}
         </span>
       )}

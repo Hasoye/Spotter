@@ -30,7 +30,7 @@
   font-weight: var(--typography-display-small-font-weight);
   line-height: var(--typography-display-small-line-height);
   letter-spacing: var(--typography-display-small-letter-spacing);
-  color: var(--color-brand-primary);
+  color: var(--color-roles-primary);
   margin: 0;
 }
 
@@ -41,19 +41,19 @@
   padding: 4px 10px;
   border-radius: 9999px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: var(--typography-label-small-letter-spacing);
 }
 
 .tierBadgeBasic {
   background: rgba(156, 163, 175, 0.15);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   border: 1px solid rgba(156, 163, 175, 0.3);
 }
 
 .tierBadgePremium {
-  background: rgba(0, 227, 170, 0.15);
-  color: var(--color-brand-primary);
-  border: 1px solid rgba(0, 227, 170, 0.4);
+  background: color-mix(in srgb, var(--color-roles-primary) 15%, transparent);
+  color: var(--color-roles-primary);
+  border: 1px solid color-mix(in srgb, var(--color-roles-primary) 40%, transparent);
 }
 
 .homeHeadline {
@@ -62,7 +62,7 @@
   font-weight: var(--typography-headline-large-font-weight);
   line-height: var(--typography-headline-large-line-height);
   letter-spacing: var(--typography-headline-large-letter-spacing);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-background);
   margin: 0;
 }
 
@@ -72,7 +72,7 @@
   font-weight: var(--typography-body-large-font-weight);
   line-height: var(--typography-body-large-line-height);
   letter-spacing: var(--typography-body-large-letter-spacing);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   margin: 0;
 }
 
@@ -83,8 +83,8 @@
 }
 
 .statCard {
-  background: var(--color-surface-dark);
-  border: 1px solid var(--color-surface-border);
+  background: var(--color-roles-surface);
+  border: 1px solid var(--color-roles-outline);
   border-radius: 12px;
   padding: 16px;
   box-shadow: var(--effect-soft-shadow);
@@ -96,30 +96,30 @@
 .statLabel {
   font-family: var(--typography-label-medium-font-family);
   font-size: var(--typography-label-medium-font-size);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: var(--typography-label-medium-letter-spacing);
 }
 
 .statValue {
   font-family: var(--typography-headline-medium-font-family);
   font-size: var(--typography-headline-medium-font-size);
   font-weight: var(--typography-headline-medium-font-weight);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
 }
 
 .statTimestamp {
   font-family: var(--typography-body-small-font-family);
   font-size: var(--typography-body-small-font-size);
-  color: var(--color-brand-primary);
+  color: var(--color-roles-primary);
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
 .askSection {
-  background: var(--color-surface-dark);
-  border: 1px solid var(--color-surface-border);
+  background: var(--color-roles-surface);
+  border: 1px solid var(--color-roles-outline);
   border-radius: 16px;
   padding: 20px;
   box-shadow: var(--effect-medium-shadow);
@@ -132,7 +132,7 @@
   font-family: var(--typography-title-large-font-family);
   font-size: var(--typography-title-large-font-size);
   font-weight: var(--typography-title-large-font-weight);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
   margin: 0;
 }
 
@@ -159,7 +159,7 @@
 
 .answerBox {
   background: rgba(8, 12, 14, 0.85);
-  border: 1px solid var(--color-surface-border);
+  border: 1px solid var(--color-roles-outline);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -176,14 +176,14 @@
 .answerMeta {
   font-family: var(--typography-label-small-font-family);
   font-size: var(--typography-label-small-font-size);
-  color: var(--color-brand-primary);
+  color: var(--color-roles-primary);
 }
 
 .answerText {
   font-family: var(--typography-body-large-font-family);
   font-size: var(--typography-body-large-font-size);
   line-height: var(--typography-body-large-line-height);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
   margin: 0;
   white-space: pre-line;
 }
@@ -199,7 +199,7 @@
 .flagButton {
   font-family: var(--typography-label-small-font-family);
   font-size: var(--typography-label-small-font-size);
-  color: var(--color-error-accent);
+  color: var(--color-roles-error);
   background: transparent;
   border: 1px solid rgba(255, 82, 82, 0.3);
   border-radius: 6px;
@@ -210,13 +210,13 @@
 
 .flagButton:hover {
   background: rgba(255, 82, 82, 0.1);
-  border-color: var(--color-error-accent);
+  border-color: var(--color-roles-error);
 }
 
 .flagSuccess {
   font-family: var(--typography-body-small-font-family);
   font-size: var(--typography-body-small-font-size);
-  color: var(--color-brand-primary);
+  color: var(--color-roles-primary);
 }
 
 .actionsGrid {
@@ -226,8 +226,8 @@
 }
 
 .actionCard {
-  background: var(--color-surface-dark);
-  border: 1px solid var(--color-surface-border);
+  background: var(--color-roles-surface);
+  border: 1px solid var(--color-roles-outline);
   border-radius: 12px;
   padding: 20px;
   display: flex;
@@ -239,7 +239,7 @@
 .actionCardText {
   font-family: var(--typography-body-medium-font-family);
   font-size: var(--typography-body-medium-font-size);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
   margin: 0;
 }
 
@@ -250,7 +250,7 @@
   padding: 10px 14px;
   font-family: var(--typography-body-small-font-family);
   font-size: var(--typography-body-small-font-size);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
 }
 
 .expiredAlert {
@@ -259,5 +259,15 @@
   border-radius: 10px;
   padding: 12px 16px;
   font-family: var(--typography-body-medium-font-family);
-  color: #ff8080;
+  color: var(--color-roles-error);
+}
+
+.homeTitle {
+  font-family: var(--typography-display-medium-font-family);
+  font-size: var(--typography-display-medium-font-size);
+  font-weight: var(--typography-display-medium-font-weight);
+  line-height: var(--typography-display-medium-line-height);
+  letter-spacing: var(--typography-display-medium-letter-spacing);
+  color: var(--color-roles-primary);
+  margin: 0;
 }

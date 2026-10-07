@@ -223,7 +223,7 @@ export default function LoginClient() {
       <div className="loginCard">
         <header className="loginHeader">
           <Link href="/" style={{ textDecoration: "none" }}>
-            <h1 className="loginBrand">SPOTTER</h1>
+            <img src="/icon.svg" alt="SPOTTER" width="48" height="48" style={{ margin: "0 auto", display: "block" }} />
           </Link>
           <h2 className="loginTitle">Member Login</h2>
           <p className="loginSubtitle">

@@ -243,7 +243,7 @@ export default function SignupClient() {
       <div className="signupCard">
         <header className="signupHeader">
           <Link href="/" style={{ textDecoration: "none" }}>
-            <h1 className="signupBrand">SPOTTER</h1>
+            <img src="/icon.svg" alt="SPOTTER" width="48" height="48" style={{ margin: "0 auto", display: "block" }} />
           </Link>
           <h2 className="signupTitle">Member Registration</h2>
           <p className="signupSubtitle">

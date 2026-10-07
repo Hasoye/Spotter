@@ -12,7 +12,7 @@
   font-weight: 600;
   line-height: var(--typography-label-medium-line-height);
   letter-spacing: var(--typography-label-medium-letter-spacing);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,9 +24,9 @@
   font-weight: var(--typography-body-large-font-weight);
   line-height: var(--typography-body-large-line-height);
   letter-spacing: var(--typography-body-large-letter-spacing);
-  background: rgba(8, 12, 14, 0.75);
-  color: var(--color-text-main);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--color-roles-surface-container);
+  color: var(--color-roles-on-surface);
+  border: 1px solid var(--color-roles-outline-variant);
   border-radius: 8px;
   padding: 12px 14px;
   width: 100%;
@@ -36,18 +36,18 @@
 }
 
 .fieldInput::placeholder {
-  color: rgba(156, 163, 175, 0.6);
+  color: var(--color-roles-on-surface-variant);
 }
 
 .fieldInput:focus {
   outline: none;
-  border-color: var(--color-brand-primary);
+  border-color: var(--color-roles-primary);
   box-shadow: var(--effect-medium-shadow);
-  background: rgba(12, 18, 22, 0.9);
+  background: var(--color-roles-surface);
 }
 
 .fieldInputError {
-  border-color: var(--color-error-accent) !important;
+  border-color: var(--color-roles-error) !important;
   box-shadow: var(--effect-hard-shadow) !important;
 }
 
@@ -57,7 +57,7 @@
   font-weight: var(--typography-body-small-font-weight);
   line-height: var(--typography-body-small-line-height);
   letter-spacing: var(--typography-body-small-letter-spacing);
-  color: var(--color-error-accent);
+  color: var(--color-roles-error);
   margin-top: 2px;
 }
 
@@ -67,7 +67,7 @@
   font-weight: var(--typography-body-small-font-weight);
   line-height: var(--typography-body-small-line-height);
   letter-spacing: var(--typography-body-small-letter-spacing);
-  color: var(--color-text-muted);
+  color: var(--color-roles-on-surface-variant);
 }
 
 .primaryButton {
@@ -76,8 +76,8 @@
   font-weight: 600;
   line-height: var(--typography-label-large-line-height);
   letter-spacing: var(--typography-label-large-letter-spacing);
-  background: linear-gradient(135deg, #00e3aa 0%, #00b88a 100%);
-  color: #070c0e;
+  background: linear-gradient(135deg, var(--color-roles-primary) 0%, #00b88a 100%);
+  color: var(--color-roles-on-primary);
   border: none;
   border-radius: 8px;
   padding: 14px 20px;
@@ -91,7 +91,7 @@
 }
 
 .primaryButton:hover:not(:disabled) {
-  background: linear-gradient(135deg, #05f0b5 0%, #00c996 100%);
+  background: linear-gradient(135deg, #05f0b5 0%, var(--color-roles-primary) 100%);
   box-shadow: var(--effect-hard-shadow);
   transform: translateY(-1px);
 }
@@ -113,7 +113,7 @@
   line-height: var(--typography-label-medium-line-height);
   letter-spacing: var(--typography-label-medium-letter-spacing);
   background: rgba(255, 255, 255, 0.05);
-  color: var(--color-text-main);
+  color: var(--color-roles-on-surface);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
   padding: 10px 16px;
