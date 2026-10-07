@@ -51,6 +51,10 @@
   padding: 8px;
 }
 
+.mobileMenuHeader {
+  display: none;
+}
+
 .mobileMenuClose {
   display: none;
 }
@@ -158,8 +162,8 @@
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--color-roles-on-background) 75%, transparent) 0%, transparent 65%),
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-roles-on-background) 55%, transparent) 0%, transparent 35%);
+    radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--color-roles-on-background) 80%, transparent) 0%, transparent 65%),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-roles-on-background) 60%, transparent) 0%, transparent 35%);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -177,7 +181,7 @@
   font-family: var(--typography-display-large-font-family);
   font-size: var(--typography-display-large-font-size);
   font-weight: var(--typography-display-large-font-weight);
-  line-height: var(--typography-display-large-line-height);
+  line-height: 1.15;
   letter-spacing: var(--typography-display-large-letter-spacing);
   color: var(--color-roles-surface-container-lowest);
   margin: 24px 0 0;
@@ -408,6 +412,7 @@
 
   .heroSubtext {
     line-height: 1.35;
+    font-size: var(--typography-body-medium-font-size);
   }
 
   .heroActions {
@@ -432,43 +437,55 @@
     color: #ffffff; /* White icon for accessibility over video background */
   }
   
+  .mobileMenuHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
   .mobileMenuClose {
     display: block;
-    align-self: flex-end;
     background: transparent;
     border: none;
     color: var(--color-roles-on-surface);
     cursor: pointer;
     padding: 8px;
-    margin-bottom: 24px;
   }
 
   .landingNavActions {
     display: flex;
     position: fixed;
     top: 0;
-    right: 0;
-    bottom: 0;
+    left: 0;
     width: 100%;
     max-width: 100%;
+    height: 100vh;
     z-index: 1000;
     background: var(--color-roles-surface-container-lowest);
     border-radius: 0;
     padding: 24px;
     flex-direction: column;
-    box-shadow: none;
-    transform: translateX(100%);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    transform: translateY(-100%);
     transition: transform 0.3s ease-in-out;
   }
 
   .landingNavActions.open {
-    transform: translateX(0);
+    transform: translateY(0);
   }
 
   .landingNavActions > a {
     width: 100%;
     text-align: center;
     margin-bottom: 16px;
+  }
+
+  .heroOverlay {
+    background: 
+      radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--color-roles-on-background) 90%, transparent) 0%, transparent 65%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-roles-on-background) 75%, transparent) 0%, transparent 35%);
   }
 
   .featuresSection {

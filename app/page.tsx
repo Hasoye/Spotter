@@ -95,16 +95,25 @@ export default function LandingPage({
     <div className="landingPage">
       <header className="heroWrapper">
         <div className="heroBackground" aria-hidden="true">
-          <video
-            className="heroVideo"
-            autoPlay
-            loop
-            muted
-            playsInline
-            poster="/hero-fallback.jpg"
-          >
-            <source src="/hero-video.mp4" type="video/mp4" />
-          </video>
+          {/* Video is disabled until public/hero-video.mp4 is added */}
+          {false ? (
+            <video
+              className="heroVideo"
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster="/hero-fallback.jpg"
+            >
+              <source src="/hero-video.mp4" type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              src="/hero-fallback.jpg"
+              className="heroVideo"
+              alt="Gym background"
+            />
+          )}
           <div className="heroOverlay" />
         </div>
 
