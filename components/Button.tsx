@@ -20,6 +20,8 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       className={`${btnClass} ${className}`}
       disabled={disabled || isLoading}
+      aria-busy={isLoading}
+      aria-live={isLoading ? "polite" : undefined}
       {...props}
     >
       {isLoading ? "Processing..." : children}

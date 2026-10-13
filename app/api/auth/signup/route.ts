@@ -1,22 +1,31 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { prisma } from "../../../../lib/prisma";
-
-const signupSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, "Full name must be at least 2 characters long")
-    .max(100, "Full name is too long"),
-  phoneNumber: z
-    .string()
-    .min(10, "Phone number must be at least 10 digits")
-    .regex(/^\+?[0-9\s-]+$/, "Invalid phone number format"),
-  tier: z.enum(["BASIC", "PREMIUM"]).default("BASIC"),
-  otpCode: z.string().length(6, "Verification code must be exactly 6 digits"),
-});
+import { logger } from "../../../../lib/logger";
+import { signupSchema } from "../../../../lib/validations";
+import { hashPassword } from "../../../../lib/password";
+import {
+  getClientIp,
+  checkRateLimit,
+  getRateLimitHeaders,
+} from "../../../../lib/rate-limit";
+import { checkPwnedPassword } from "../../../../lib/hibp";
 
 export async function POST(request: Request) {
   try {
+    // 1. Server-side Rate Limiting (5 attempts max per IP)
+    const clientIp = getClientIp(request);
+    const rateLimit = checkRateLimit(`signup:${clientIp}`, 5);
+
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: "Too many signup attempts. Please try again later." },
+        {
+          status: 429,
+          headers: getRateLimitHeaders(rateLimit),
+        }
+      );
+    }
+
     const body = await request.json();
     const result = signupSchema.safeParse(body);
 
@@ -24,21 +33,27 @@ export async function POST(request: Request) {
       const firstError = result.error.errors[0]?.message || "Invalid input data";
       return NextResponse.json(
         { error: firstError, details: result.error.flatten() },
-        { status: 400 }
+        {
+          status: 400,
+          headers: getRateLimitHeaders(rateLimit),
+        }
       );
     }
 
-    const { fullName, phoneNumber, tier, otpCode } = result.data;
+    const { fullName, phoneNumber, password, tier, otpCode } = result.data;
 
-    // Simulated SMS OTP check (for MVP development workflow)
+    // 2. Simulated SMS OTP check (for MVP development workflow)
     if (otpCode !== "123456" && otpCode !== "000000") {
       return NextResponse.json(
         { error: "Invalid verification code. Please check your SMS and try again." },
-        { status: 400 }
+        {
+          status: 400,
+          headers: getRateLimitHeaders(rateLimit),
+        }
       );
     }
 
-    // Check if phone number already exists
+    // 3. Check if phone number already exists
     const existingMember = await prisma.member.findUnique({
       where: { phoneNumber },
     });
@@ -46,20 +61,50 @@ export async function POST(request: Request) {
     if (existingMember) {
       return NextResponse.json(
         { error: "A member with this phone number is already registered." },
-        { status: 409 }
+        {
+          status: 409,
+          headers: getRateLimitHeaders(rateLimit),
+        }
       );
     }
 
-    // Create new member record
+    // 4. Have I Been Pwned (HIBP) Breached Password Protection (k-anonymity SHA-1 prefix check)
+    const hibpResult = await checkPwnedPassword(password);
+    if (hibpResult.status === "BREACHED") {
+      return NextResponse.json(
+        { error: "This password has appeared in known data breaches. Please choose a different password." },
+        {
+          status: 400,
+          headers: getRateLimitHeaders(rateLimit),
+        }
+      );
+    }
+
+    if (hibpResult.status === "ERROR") {
+      // Deliberate fail-closed policy for password creation
+      return NextResponse.json(
+        { error: hibpResult.error },
+        {
+          status: 503,
+          headers: getRateLimitHeaders(rateLimit),
+        }
+      );
+    }
+
+    // 5. Hash normalized password securely using Argon2id
+    const passwordHash = await hashPassword(password);
+
+    // 6. Create new member record storing only the Argon2id hash
     const newMember = await prisma.member.create({
       data: {
         fullName,
         phoneNumber,
+        passwordHash,
         tier,
       },
     });
 
-    // Create response with server session cookie
+    // 7. Create response with server session cookie (never exposing password or hash)
     const response = NextResponse.json(
       {
         success: true,
@@ -68,9 +113,14 @@ export async function POST(request: Request) {
           fullName: newMember.fullName,
           phoneNumber: newMember.phoneNumber,
           tier: newMember.tier,
+          balanceKobo: newMember.balanceKobo,
+          createdAt: newMember.createdAt.toISOString(),
         },
       },
-      { status: 201 }
+      {
+        status: 201,
+        headers: getRateLimitHeaders(rateLimit),
+      }
     );
 
     // Set server-side HTTP-only session cookie
@@ -83,6 +133,27 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
+    // Handle Prisma unique constraint violation cleanly
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "P2002"
+    ) {
+      return NextResponse.json(
+        { error: "A member with this phone number is already registered." },
+        { status: 409 }
+      );
+    }
+
+    logger.error(
+      "Failed to process signup request",
+      {
+        operation: "signup",
+      },
+      error
+    );
+
     return NextResponse.json(
       { error: "An unexpected error occurred during sign up. Please try again." },
       { status: 500 }
