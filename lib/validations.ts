@@ -1,12 +1,21 @@
 import { z } from "zod";
 
 /**
+ * Normalizes phone number input by trimming whitespace and converting to lowercase.
+ */
+export function normalizePhoneNumber(phoneNumber: string): string {
+  return phoneNumber.trim().toLowerCase();
+}
+
+/**
  * Standard phone number schema conforming to Nigerian mobile/international formats.
  * Requires at least 10 digits and valid characters.
+ * Enforces trim and lowercase normalization.
  */
 export const phoneNumberSchema = z
   .string()
   .trim()
+  .toLowerCase()
   .min(10, "Phone number must be at least 10 digits")
   .regex(/^\+?[0-9\s-]+$/, "Invalid phone number format");
 
@@ -63,12 +72,20 @@ export const sendOtpSchema = z.object({
 export type SendOtpInput = z.infer<typeof sendOtpSchema>;
 
 /**
+ * Login password schema requiring a non-empty password without enforcing signup complexity.
+ */
+export const loginPasswordSchema = z
+  .string()
+  .trim()
+  .min(1, "Password is required");
+
+/**
  * Server validation schema for POST /api/auth/login
  * Supports password authentication while keeping otpCode optional for backward-compatibility.
  */
 export const loginSchema = z.object({
   phoneNumber: phoneNumberSchema,
-  password: passwordSchema,
+  password: loginPasswordSchema,
   otpCode: otpCodeSchema.optional(),
 });
 

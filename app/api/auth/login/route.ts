@@ -8,6 +8,10 @@ import {
   checkRateLimit,
   getRateLimitHeaders,
 } from "../../../../lib/rate-limit";
+import { issueMemberSession } from "../../../../lib/session";
+import { getAccountDeletionStatus } from "../../../../lib/account-deletion";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
@@ -41,23 +45,36 @@ export async function POST(request: Request) {
 
     const { phoneNumber, password } = result.data;
 
-    // Look up member by phone number
-    const member = await prisma.member.findUnique({
+    // 2. Look up member by phone number (with fallback for cleaned format and local/international variations)
+    const cleanedPhone = phoneNumber.replace(/[\s-]/g, "");
+    let member = await prisma.member.findUnique({
       where: { phoneNumber },
     });
 
-    // Check account status/deactivation before verifying password
-    if (member && member.deactivatedAt) {
-      return NextResponse.json(
-        { error: "This account has been deactivated. Please contact gym staff." },
-        {
-          status: 403,
-          headers: getRateLimitHeaders(rateLimit),
-        }
-      );
+    if (!member && cleanedPhone !== phoneNumber) {
+      member = await prisma.member.findUnique({
+        where: { phoneNumber: cleanedPhone },
+      });
     }
 
-    // Generic error for invalid credentials
+    if (!member) {
+      let alternatePhone: string | null = null;
+      if (cleanedPhone.startsWith("+234") && cleanedPhone.length === 14) {
+        alternatePhone = "0" + cleanedPhone.slice(4);
+      } else if (cleanedPhone.startsWith("0") && cleanedPhone.length === 11) {
+        alternatePhone = "+234" + cleanedPhone.slice(1);
+      } else if (cleanedPhone.startsWith("234") && cleanedPhone.length === 13) {
+        alternatePhone = "0" + cleanedPhone.slice(3);
+      }
+
+      if (alternatePhone) {
+        member = await prisma.member.findUnique({
+          where: { phoneNumber: alternatePhone },
+        });
+      }
+    }
+
+    // Generic error for invalid credentials if member not found or has no password hash
     if (!member || !member.passwordHash) {
       return NextResponse.json(
         { error: "Invalid phone number or password. Please try again." },
@@ -68,7 +85,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Verify password against stored Argon2id hash (normalizes leading/trailing spaces)
+    // 3. Verify password against stored Argon2id hash (normalizes leading/trailing spaces)
     const isPasswordValid = await verifyPassword(member.passwordHash, password);
     if (!isPasswordValid) {
       return NextResponse.json(
@@ -80,16 +97,52 @@ export async function POST(request: Request) {
       );
     }
 
-    // Prepare response with safe public member data (never exposing password or hash)
+    // 4. Check account deactivation and deletion grace period status
+    if (member.deactivatedAt) {
+      const deletionStatus = getAccountDeletionStatus(member.deactivatedAt);
+      const errorMessage = deletionStatus.isGracePeriodExpired
+        ? "This account has been permanently deactivated."
+        : `This account is scheduled for deletion (${deletionStatus.daysRemaining} days remaining in grace period). Please contact gym staff to restore your account.`;
+
+      return NextResponse.json(
+        { error: errorMessage },
+        {
+          status: 403,
+          headers: getRateLimitHeaders(rateLimit),
+        }
+      );
+    }
+
+    // 5. For every login request, check user phone number verification status
+    if (!member.isActive) {
+      return NextResponse.json(
+        { error: "Phone number is not verified. Please verify your phone number before logging in." },
+        {
+          status: 403,
+          headers: getRateLimitHeaders(rateLimit),
+        }
+      );
+    }
+
+    // 6. Issue a fresh session token on every sign in
+    const userAgent = request.headers.get("user-agent") || undefined;
+    const session = await issueMemberSession(member.id, {
+      ipAddress: clientIp,
+      userAgent,
+    });
+
+    // Prepare response with safe public member data and fresh raw session token
     const response = NextResponse.json(
       {
         success: true,
+        sessionToken: session.rawToken,
         member: {
           id: member.id,
           fullName: member.fullName,
           phoneNumber: member.phoneNumber,
           tier: member.tier,
           balanceKobo: member.balanceKobo,
+          isPhoneVerified: member.isActive,
           expiresAt: member.expiresAt ? member.expiresAt.toISOString() : null,
           createdAt: member.createdAt.toISOString(),
         },
@@ -100,12 +153,13 @@ export async function POST(request: Request) {
       }
     );
 
-    // Set server-side HTTP-only session cookie
-    response.cookies.set("spotter_session", member.id, {
+    // Set server-side HTTP-only session cookie with the raw session token (hashed in DB)
+    response.cookies.set("spotter_session", session.rawToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
+      expires: session.expiresAt,
     });
 
     return response;

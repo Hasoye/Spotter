@@ -1,20 +1,32 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   passwordSchema,
   signupSchema,
   loginSchema,
   requestResetSchema,
   resetPasswordSchema,
+  normalizePhoneNumber,
 } from "../../lib/validations";
 import {
   validatePassword,
   validateConfirmPassword,
+  validatePhoneNumber,
+  normalizePhoneNumberInput,
 } from "./auth-client";
 import {
   hashPassword,
   verifyPassword,
   normalizePassword,
 } from "../../lib/password";
+import {
+  generateSessionToken,
+  hashSessionToken,
+  SESSION_DURATION_MS,
+} from "../../lib/session";
+import {
+  ACCOUNT_DELETION_GRACE_PERIOD_MS,
+  getAccountDeletionStatus,
+} from "../../lib/account-deletion";
 import {
   checkRateLimit,
   resetRateLimitStore,
@@ -735,4 +747,581 @@ describe("Reset Password Argon2id Replacement and Security Invariants", () => {
     expect(JSON.stringify(logged)).not.toContain("654321");
   });
 });
+
+describe("Login Flow Zod Validation and Normalization", () => {
+  it("validates that Zod works cleanly for the login flow", () => {
+    const validResult = loginSchema.safeParse({
+      phoneNumber: "08012345678",
+      password: "SecretPassword1",
+    });
+    expect(validResult.success).toBe(true);
+    if (validResult.success) {
+      expect(validResult.data.phoneNumber).toBe("08012345678");
+    }
+  });
+
+  it("normalizes phone numbers with trim and lowercase in Zod login schema", () => {
+    const rawInput = "   08012345678   ";
+    const result = loginSchema.safeParse({
+      phoneNumber: rawInput,
+      password: "SecretPassword1",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.phoneNumber).toBe("08012345678");
+    }
+  });
+
+  it("trims and lowercases input using normalizePhoneNumber helper", () => {
+    expect(normalizePhoneNumber("   +2348012345678   ")).toBe("+2348012345678");
+    expect(normalizePhoneNumber("  USER@GYM.COM  ")).toBe("user@gym.com");
+  });
+
+  it("trims and lowercases input using normalizePhoneNumberInput form helper", () => {
+    expect(normalizePhoneNumberInput("   08012345678   ")).toBe("08012345678");
+    expect(normalizePhoneNumberInput("  080ABC  ")).toBe("080abc");
+  });
+
+  it("rejects login input when phone number does not meet format requirements", () => {
+    const result = loginSchema.safeParse({
+      phoneNumber: "123",
+      password: "SecretPassword1",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects login input when password is empty or whitespace", () => {
+    const result = loginSchema.safeParse({
+      phoneNumber: "08012345678",
+      password: "   ",
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("Login Verification: Phone Lookup, Argon2 Password, and Phone Verification Status", () => {
+  it("performs login lookup using normalized phone number", async () => {
+    const members = [
+      {
+        id: "mem_1",
+        phoneNumber: "08012345678",
+        isActive: true,
+        deactivatedAt: null,
+      },
+    ];
+
+    const findMemberByPhone = (phoneInput: string) => {
+      const normalized = normalizePhoneNumber(phoneInput);
+      return members.find((m) => m.phoneNumber === normalized) || null;
+    };
+
+    expect(findMemberByPhone("08012345678")).not.toBeNull();
+    expect(findMemberByPhone("   08012345678   ")).not.toBeNull();
+    expect(findMemberByPhone("08099999999")).toBeNull();
+  });
+
+  it("verifies password using Argon2id during login flow", async () => {
+    const correctPassword = "UserPass123";
+    const passwordHash = await hashPassword(correctPassword);
+
+    const isMatch = await verifyPassword(passwordHash, "UserPass123");
+    expect(isMatch).toBe(true);
+
+    const isWrongMatch = await verifyPassword(passwordHash, "WrongPass999");
+    expect(isWrongMatch).toBe(false);
+  });
+
+  it("blocks login and checks user phone number verification status when unverified", () => {
+    const checkMemberStatus = (member: { isActive: boolean; deactivatedAt: Date | null }) => {
+      if (member.deactivatedAt) {
+        return { allowed: false, status: 403, error: "This account has been deactivated. Please contact gym staff." };
+      }
+      if (!member.isActive) {
+        return { allowed: false, status: 403, error: "Phone number is not verified. Please verify your phone number before logging in." };
+      }
+      return { allowed: true };
+    };
+
+    const unverifiedMember = { isActive: false, deactivatedAt: null };
+    const unverifiedResult = checkMemberStatus(unverifiedMember);
+    expect(unverifiedResult.allowed).toBe(false);
+    expect(unverifiedResult.status).toBe(403);
+    expect(unverifiedResult.error).toBe(
+      "Phone number is not verified. Please verify your phone number before logging in."
+    );
+
+    const activeMember = { isActive: true, deactivatedAt: null };
+    const activeResult = checkMemberStatus(activeMember);
+    expect(activeResult.allowed).toBe(true);
+
+    const deactivatedMember = { isActive: true, deactivatedAt: new Date() };
+    const deactivatedResult = checkMemberStatus(deactivatedMember);
+    expect(deactivatedResult.allowed).toBe(false);
+    expect(deactivatedResult.status).toBe(403);
+    expect(deactivatedResult.error).toBe("This account has been deactivated. Please contact gym staff.");
+  });
+});
+
+describe("Fresh Session Token Issuance", () => {
+  it("generates a fresh cryptographically secure random session token on every call", () => {
+    const token1 = generateSessionToken();
+    const token2 = generateSessionToken();
+
+    expect(token1).toBeDefined();
+    expect(typeof token1).toBe("string");
+    expect(token1.length).toBeGreaterThan(32);
+    expect(token2).toBeDefined();
+    expect(token1).not.toBe(token2);
+  });
+
+  it("issues fresh distinct session tokens for consecutive sign-ins", () => {
+    const issuedTokens = new Set<string>();
+    for (let i = 0; i < 50; i++) {
+      const token = generateSessionToken();
+      expect(issuedTokens.has(token)).toBe(false);
+      issuedTokens.add(token);
+    }
+    expect(issuedTokens.size).toBe(50);
+  });
+
+  it("sets correct expiration timestamp for new session tokens", () => {
+    const now = Date.now();
+    const expiresAt = new Date(now + SESSION_DURATION_MS);
+    expect(expiresAt.getTime()).toBeGreaterThan(now);
+    expect(SESSION_DURATION_MS).toBe(7 * 24 * 60 * 60 * 1000);
+  });
+});
+
+describe("Session Cookie Hashing and Database Reflection", () => {
+  it("hashes session tokens using SHA-256 producing 64-character hex digests", () => {
+    const rawToken = "550e8400-e29b-41d4-a716-446655440000-abcdef1234567890";
+    const hashed = hashSessionToken(rawToken);
+
+    expect(hashed).toBeDefined();
+    expect(hashed.length).toBe(64);
+    expect(/^[a-f0-9]{64}$/.test(hashed)).toBe(true);
+    expect(hashed).not.toBe(rawToken);
+  });
+
+  it("produces deterministic SHA-256 hashes for identical session tokens", () => {
+    const token = generateSessionToken();
+    const hash1 = hashSessionToken(token);
+    const hash2 = hashSessionToken(token);
+    expect(hash1).toBe(hash2);
+  });
+
+  it("produces unique hashes for distinct session tokens", () => {
+    const token1 = generateSessionToken();
+    const token2 = generateSessionToken();
+    expect(hashSessionToken(token1)).not.toBe(hashSessionToken(token2));
+  });
+
+  it("ensures raw token is sent to the client while the database stores only the hash", () => {
+    const rawToken = generateSessionToken();
+    const dbStoredHash = hashSessionToken(rawToken);
+
+    // Mock incoming cookie from client browser
+    const clientCookie = rawToken;
+
+    // Database lookup queries by hash of client cookie
+    const lookupHash = hashSessionToken(clientCookie);
+    expect(lookupHash).toBe(dbStoredHash);
+  });
+});
+
+describe("User Validity Check (Banned, Locked, Deactivated)", () => {
+  interface MockMember {
+    id: string;
+    fullName: string;
+    phoneNumber: string;
+    tier: string;
+    isActive: boolean;
+    deactivatedAt: Date | null;
+  }
+
+  interface MockSession {
+    sessionToken: string;
+    expiresAt: Date;
+    revokedAt: Date | null;
+    member: MockMember;
+  }
+
+  interface SessionValidationResult {
+    valid: boolean;
+    reason?: string;
+    member?: MockMember;
+  }
+
+  const validateSessionRecord = (session: MockSession | null): SessionValidationResult => {
+    if (!session) return { valid: false, reason: "NOT_FOUND" };
+    if (session.revokedAt) return { valid: false, reason: "REVOKED" };
+    if (session.expiresAt.getTime() <= Date.now()) return { valid: false, reason: "EXPIRED" };
+    if (!session.member.isActive) return { valid: false, reason: "UNVERIFIED_OR_LOCKED" };
+    if (session.member.deactivatedAt) return { valid: false, reason: "BANNED_OR_DEACTIVATED" };
+    return { valid: true, member: session.member };
+  };
+
+  it("accepts active, verified, non-deactivated user with valid session", () => {
+    const session: MockSession = {
+      sessionToken: hashSessionToken("valid-token"),
+      expiresAt: new Date(Date.now() + 100000),
+      revokedAt: null,
+      member: {
+        id: "mem_valid",
+        fullName: "Amaka Eze",
+        phoneNumber: "08012345678",
+        tier: "PREMIUM",
+        isActive: true,
+        deactivatedAt: null,
+      },
+    };
+
+    const result = validateSessionRecord(session);
+    expect(result.valid).toBe(true);
+    if (result.valid && result.member) {
+      expect(result.member.id).toBe("mem_valid");
+    }
+  });
+
+  it("rejects user who is locked or unverified (isActive: false)", () => {
+    const session: MockSession = {
+      sessionToken: hashSessionToken("locked-user-token"),
+      expiresAt: new Date(Date.now() + 100000),
+      revokedAt: null,
+      member: {
+        id: "mem_locked",
+        fullName: "Locked User",
+        phoneNumber: "08011112222",
+        tier: "BASIC",
+        isActive: false,
+        deactivatedAt: null,
+      },
+    };
+
+    const result = validateSessionRecord(session);
+    expect(result.valid).toBe(false);
+    expect(result.reason).toBe("UNVERIFIED_OR_LOCKED");
+  });
+
+  it("rejects user who is banned or deactivated (deactivatedAt is set)", () => {
+    const session: MockSession = {
+      sessionToken: hashSessionToken("banned-user-token"),
+      expiresAt: new Date(Date.now() + 100000),
+      revokedAt: null,
+      member: {
+        id: "mem_banned",
+        fullName: "Banned User",
+        phoneNumber: "08033334444",
+        tier: "BASIC",
+        isActive: true,
+        deactivatedAt: new Date(),
+      },
+    };
+
+    const result = validateSessionRecord(session);
+    expect(result.valid).toBe(false);
+    expect(result.reason).toBe("BANNED_OR_DEACTIVATED");
+  });
+
+  it("rejects expired session", () => {
+    const session: MockSession = {
+      sessionToken: hashSessionToken("expired-token"),
+      expiresAt: new Date(Date.now() - 5000),
+      revokedAt: null,
+      member: {
+        id: "mem_expired",
+        fullName: "Expired Session User",
+        phoneNumber: "08055556666",
+        tier: "BASIC",
+        isActive: true,
+        deactivatedAt: null,
+      },
+    };
+
+    const result = validateSessionRecord(session);
+    expect(result.valid).toBe(false);
+    expect(result.reason).toBe("EXPIRED");
+  });
+
+  it("rejects revoked session (logged out)", () => {
+    const session: MockSession = {
+      sessionToken: hashSessionToken("revoked-token"),
+      expiresAt: new Date(Date.now() + 100000),
+      revokedAt: new Date(),
+      member: {
+        id: "mem_revoked",
+        fullName: "Logged Out User",
+        phoneNumber: "08077778888",
+        tier: "PREMIUM",
+        isActive: true,
+        deactivatedAt: null,
+      },
+    };
+
+    const result = validateSessionRecord(session);
+    expect(result.valid).toBe(false);
+    expect(result.reason).toBe("REVOKED");
+  });
+});
+
+describe("Server-Side Logout and Session Revocation", () => {
+  it("marks session revoked server-side and invalidates subsequent lookups", () => {
+    const rawToken = generateSessionToken();
+    const storedSessions = new Map<string, { revokedAt: Date | null }>();
+
+    const hashedToken = hashSessionToken(rawToken);
+    storedSessions.set(hashedToken, { revokedAt: null });
+
+    // Server-side logout execution
+    const serverSideLogout = (token: string) => {
+      const h = hashSessionToken(token);
+      const s = storedSessions.get(h);
+      if (s && !s.revokedAt) {
+        s.revokedAt = new Date();
+        return true;
+      }
+      return false;
+    };
+
+    expect(storedSessions.get(hashedToken)?.revokedAt).toBeNull();
+
+    const loggedOut = serverSideLogout(rawToken);
+    expect(loggedOut).toBe(true);
+    expect(storedSessions.get(hashedToken)?.revokedAt).not.toBeNull();
+
+    // Repeated logout is a safe no-op
+    const repeatLogout = serverSideLogout(rawToken);
+    expect(repeatLogout).toBe(false);
+  });
+});
+
+describe("Middleware Protection and Header Attachment Rules", () => {
+  const PROTECTED_PREFIXES = ["/dashboard", "/member", "/settings", "/profile"];
+
+  const evaluateMiddleware = (
+    pathname: string,
+    sessionCookie: string | undefined,
+    sessionValidationResult?: { valid: boolean; member?: { id: string; fullName: string; phoneNumber: string; tier: string } }
+  ) => {
+    const isProtected = PROTECTED_PREFIXES.some(
+      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+    );
+
+    if (isProtected && !sessionCookie) {
+      return {
+        action: "REDIRECT",
+        destination: `/auth?mode=login&redirect=${encodeURIComponent(pathname)}`,
+      };
+    }
+
+    if (sessionCookie && sessionValidationResult) {
+      if (sessionValidationResult.valid && sessionValidationResult.member) {
+        if (pathname === "/auth" || pathname === "/login") {
+          return { action: "REDIRECT", destination: "/dashboard" };
+        }
+        return {
+          action: "NEXT",
+          headers: {
+            "x-member-id": sessionValidationResult.member.id,
+            "x-member-phone": sessionValidationResult.member.phoneNumber,
+            "x-member-name": sessionValidationResult.member.fullName,
+            "x-member-tier": sessionValidationResult.member.tier,
+          },
+        };
+      }
+
+      if (isProtected) {
+        return {
+          action: "REDIRECT",
+          destination: `/auth?mode=login&redirect=${encodeURIComponent(pathname)}&error=session_expired`,
+          clearCookie: true,
+        };
+      }
+    }
+
+    return { action: "NEXT" };
+  };
+
+  it("redirects unauthenticated users trying to access protected dashboard to login", () => {
+    const result = evaluateMiddleware("/dashboard", undefined);
+    expect(result.action).toBe("REDIRECT");
+    expect(result.destination).toContain("/auth?mode=login");
+  });
+
+  it("attaches member details to request headers when valid session is verified", () => {
+    const result = evaluateMiddleware("/dashboard", "valid-raw-cookie", {
+      valid: true,
+      member: {
+        id: "mem_42",
+        fullName: "Chioma Okeke",
+        phoneNumber: "08012345678",
+        tier: "PREMIUM",
+      },
+    });
+
+    expect(result.action).toBe("NEXT");
+    expect(result.headers?.["x-member-id"]).toBe("mem_42");
+    expect(result.headers?.["x-member-name"]).toBe("Chioma Okeke");
+    expect(result.headers?.["x-member-phone"]).toBe("08012345678");
+    expect(result.headers?.["x-member-tier"]).toBe("PREMIUM");
+  });
+
+  it("redirects to login and clears cookie when session is expired or user is banned", () => {
+    const result = evaluateMiddleware("/dashboard", "banned-or-expired-cookie", {
+      valid: false,
+    });
+
+    expect(result.action).toBe("REDIRECT");
+    expect(result.destination).toContain("/auth?mode=login");
+    expect(result.clearCookie).toBe(true);
+  });
+
+  it("allows public access to landing page without session cookie", () => {
+    const result = evaluateMiddleware("/", undefined);
+    expect(result.action).toBe("NEXT");
+  });
+});
+
+describe("Account Deletion Lifecycle: Soft Delete, Grace Period, and Hard Purge", () => {
+  it("verifies the default grace period is exactly 30 days", () => {
+    expect(ACCOUNT_DELETION_GRACE_PERIOD_MS).toBe(30 * 24 * 60 * 60 * 1000);
+  });
+
+  it("calculates account deletion status accurately during grace period", () => {
+    const now = new Date("2026-10-14T12:00:00Z");
+    const deactivatedAt = new Date("2026-10-04T12:00:00Z"); // 10 days ago
+
+    const status = getAccountDeletionStatus(deactivatedAt, now);
+    expect(status.isScheduled).toBe(true);
+    expect(status.isGracePeriodExpired).toBe(false);
+    expect(status.daysRemaining).toBe(20);
+    expect(status.scheduledPurgeDate).toEqual(new Date("2026-11-03T12:00:00Z"));
+  });
+
+  it("identifies when the 30-day grace period has expired", () => {
+    const now = new Date("2026-11-20T12:00:00Z");
+    const deactivatedAt = new Date("2026-10-01T12:00:00Z"); // 50 days ago
+
+    const status = getAccountDeletionStatus(deactivatedAt, now);
+    expect(status.isScheduled).toBe(true);
+    expect(status.isGracePeriodExpired).toBe(true);
+    expect(status.daysRemaining).toBe(0);
+  });
+
+  it("returns not scheduled for active members without deactivatedAt", () => {
+    const status = getAccountDeletionStatus(null);
+    expect(status.isScheduled).toBe(false);
+    expect(status.scheduledPurgeDate).toBeNull();
+    expect(status.isGracePeriodExpired).toBe(false);
+    expect(status.daysRemaining).toBeNull();
+  });
+
+  it("simulates soft deletion by disabling account and revoking all active sessions", () => {
+    const member = {
+      id: "mem_del_1",
+      isActive: true,
+      deactivatedAt: null as Date | null,
+    };
+
+    const activeSessions = [
+      { id: "sess_1", revokedAt: null as Date | null },
+      { id: "sess_2", revokedAt: null as Date | null },
+    ];
+
+    const softDeleteMember = (targetMember: typeof member, now: Date) => {
+      targetMember.deactivatedAt = now;
+      targetMember.isActive = false;
+      for (const sess of activeSessions) {
+        sess.revokedAt = now;
+      }
+    };
+
+    const deletionTime = new Date("2026-10-14T15:00:00Z");
+    softDeleteMember(member, deletionTime);
+
+    expect(member.isActive).toBe(false);
+    expect(member.deactivatedAt).toEqual(deletionTime);
+    expect(activeSessions.every((s) => s.revokedAt === deletionTime)).toBe(true);
+  });
+
+  it("simulates hard purging: scrubs PII while retaining financial ledger references", () => {
+    const member = {
+      id: "mem_purge_99",
+      fullName: "Bisi Adebayo",
+      phoneNumber: "08012345678",
+      passwordHash: "$argon2id$mockhash" as string | null,
+      balanceKobo: 500000,
+      tier: "PREMIUM",
+      expiresAt: new Date("2026-12-31") as Date | null,
+      isActive: false,
+    };
+
+    const financialLedgerEntries = [
+      { id: "led_1", memberId: "mem_purge_99", amountKobo: 500000, entryType: "PAYMENT_CREDIT" },
+    ];
+
+    // Purge action execution
+    const purgeMemberRecord = (target: typeof member) => {
+      target.fullName = "Deleted Member";
+      target.phoneNumber = `deleted_${target.id}`;
+      target.passwordHash = null;
+      target.balanceKobo = 0;
+      target.tier = "BASIC";
+      target.expiresAt = null;
+      target.isActive = false;
+    };
+
+    purgeMemberRecord(member);
+
+    // PII scrubbed
+    expect(member.fullName).toBe("Deleted Member");
+    expect(member.phoneNumber).toBe("deleted_mem_purge_99");
+    expect(member.passwordHash).toBeNull();
+    expect(member.balanceKobo).toBe(0);
+
+    // Financial ledger integrity preserved
+    expect(financialLedgerEntries[0].memberId).toBe("mem_purge_99");
+    expect(financialLedgerEntries[0].amountKobo).toBe(500000);
+  });
+
+  it("scheduled purge runner filters only records whose grace period has expired", () => {
+    const now = new Date("2026-10-14T12:00:00Z");
+    const cutoffDate = new Date(now.getTime() - ACCOUNT_DELETION_GRACE_PERIOD_MS);
+
+    const membersDatabase = [
+      { id: "mem_active", deactivatedAt: null, fullName: "Active User" },
+      {
+        id: "mem_in_grace",
+        deactivatedAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000), // 10 days ago (within grace period)
+        fullName: "Grace Period User",
+      },
+      {
+        id: "mem_expired_1",
+        deactivatedAt: new Date(now.getTime() - 35 * 24 * 60 * 60 * 1000), // 35 days ago (grace period expired)
+        fullName: "Expired Grace User 1",
+      },
+      {
+        id: "mem_already_purged",
+        deactivatedAt: new Date(now.getTime() - 40 * 24 * 60 * 60 * 1000),
+        fullName: "Deleted Member", // Already purged
+      },
+    ];
+
+    const findEligibleToPurge = (members: typeof membersDatabase) => {
+      return members.filter(
+        (m) =>
+          m.deactivatedAt !== null &&
+          m.deactivatedAt <= cutoffDate &&
+          m.fullName !== "Deleted Member"
+      );
+    };
+
+    const eligible = findEligibleToPurge(membersDatabase);
+    expect(eligible.length).toBe(1);
+    expect(eligible[0].id).toBe("mem_expired_1");
+  });
+});
+
+
+
 

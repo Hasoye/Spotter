@@ -33,8 +33,13 @@ export const validateFullName = (value: string): string | undefined => {
   return undefined;
 };
 
+export const normalizePhoneNumberInput = (value: string): string => {
+  return value.trim().toLowerCase();
+};
+
 export const validatePhoneNumber = (value: string): string | undefined => {
-  const cleaned = value.replace(/[\s-]/g, "");
+  const normalized = value.trim().toLowerCase();
+  const cleaned = normalized.replace(/[\s-]/g, "");
   if (!cleaned) return EMPTY_FIELD_ERROR;
   if (cleaned.length < 10 || !/^\+?[0-9]+$/.test(cleaned)) {
     return "Please enter a valid phone number (at least 10 digits).";
@@ -57,6 +62,12 @@ export const validatePassword = (value: string): string | undefined => {
   if (!/[0-9]/.test(normalized)) {
     return "Password must contain at least one number.";
   }
+  return undefined;
+};
+
+export const validateLoginPassword = (value: string): string | undefined => {
+  const normalized = value.trim();
+  if (!normalized) return EMPTY_FIELD_ERROR;
   return undefined;
 };
 
@@ -238,9 +249,12 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const normalizedPhone = normalizePhoneNumberInput(phoneNumber);
+    const normalizedPassword = password.trim();
+
     const newErrors: FieldErrors = {};
-    const phoneError = validatePhoneNumber(phoneNumber);
-    const passError = validatePassword(password);
+    const phoneError = validatePhoneNumber(normalizedPhone);
+    const passError = validateLoginPassword(normalizedPassword);
 
     if (phoneError) newErrors.phoneNumber = phoneError;
     if (passError) newErrors.password = passError;
@@ -258,8 +272,8 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          phoneNumber: phoneNumber.trim(),
-          password: password.trim(),
+          phoneNumber: normalizedPhone,
+          password: normalizedPassword,
         }),
       });
 
@@ -494,7 +508,7 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
 
   const isLoginValid =
     Boolean(phoneNumber.trim() && !validatePhoneNumber(phoneNumber)) &&
-    Boolean(password.trim() && !validatePassword(password));
+    Boolean(password.trim() && !validateLoginPassword(password));
 
   const isResetValid =
     Boolean(password.trim() && !validatePassword(password)) &&
@@ -580,7 +594,9 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
                     }
                   }}
                   onBlur={() => {
-                    const err = validatePhoneNumber(phoneNumber);
+                    const normalized = normalizePhoneNumberInput(phoneNumber);
+                    setPhoneNumber(normalized);
+                    const err = validatePhoneNumber(normalized);
                     if (err)
                       setErrors((prev) => ({ ...prev, phoneNumber: err }));
                   }}
@@ -608,7 +624,7 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
                     }
                   }}
                   onBlur={() => {
-                    const err = validatePassword(password);
+                    const err = validateLoginPassword(password);
                     if (err) setErrors((prev) => ({ ...prev, password: err }));
                   }}
                   error={errors.password}

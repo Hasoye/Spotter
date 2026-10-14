@@ -26,5 +26,13 @@ Reason: the PRD explicitly excludes agents, automated messages, and follow ups f
 ## What v2 will likely need
 Reminders before membership expiry and follow ups on flagged answers are named in the PRD as v2 candidates. `metrics.md` already states what gets logged now to support that later decision. This file does not repeat that list.
 
+## Maintenance jobs
+
+### Account deletion purge
+- **Purpose**: Purges PII from member accounts whose 30-day soft-delete grace period has expired, while retaining anonymized financial ledger entries for gym record-keeping integrity.
+- **Trigger**: External daily trigger via secure HTTP maintenance endpoint (`POST /api/cron/purge-accounts` authenticated by `CRON_SECRET`) or standalone CLI runner (`scripts/purge-accounts.ts`). No background queue or daemon packages are added to the codebase.
+- **Failure handling**: Idempotent database transactions per eligible member. If any individual member purge fails, the failure is logged with context, and the remaining purges continue.
+- **Grace period**: 30 days from `deactivatedAt`.
+
 ## Rule
 If a future task seems to require a background job, stop and ask before adding one. This file must be updated with the job's purpose, trigger, and failure handling before any job scheduler is introduced.
