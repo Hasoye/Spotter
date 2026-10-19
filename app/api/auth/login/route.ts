@@ -162,14 +162,6 @@ export async function POST(request: Request) {
       expires: session.expiresAt,
     });
 
-    // Existing members bypass onboarding on login
-    response.cookies.set("spotter_onboarded", "true", {
-      path: "/",
-      maxAge: 365 * 24 * 60 * 60,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
-
     return response;
   } catch (error) {
     logger.error(

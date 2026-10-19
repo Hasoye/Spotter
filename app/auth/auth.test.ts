@@ -429,17 +429,69 @@ describe("Have I Been Pwned (HIBP) Breached Password Protection", () => {
     expect(result.status).toBe("BREACHED");
   });
 
-  it("accepts passwords that do not appear in the returned range", async () => {
-    const password = "VeryUniquePasswordNeverBreached123";
+  it("ignores padding entries where count is 0 to prevent false-positive rejections", async () => {
+    const password = "UniqueUnpaddedPass2026!";
     const sha1 = computePasswordSha1(password);
     const suffix = sha1.slice(5);
 
-    // Mock response without matching suffix
-    const mockResponseText = `0018A45C4D1DEF81644B54AB7F969B88D65:1\r\n11111111111111111111111111111111111:58`;
-    const mockFetch = (async () => new Response(mockResponseText)) as typeof fetch;
+    // HIBP returns padding records with count: 0 when Add-Padding: true is set
+    const mockPaddingResponseText = `0018A45C4D1DEF81644B54AB7F969B88D65:10\r\n${suffix}:0\r\n00D4F6E8FEA0E0E00E47232C22C2333AD2E:5`;
+    const mockFetch = (async () =>
+      new Response(mockPaddingResponseText)) as typeof fetch;
+
+    const result = await checkPwnedPassword(password, mockFetch);
+    // Even if suffix matches a padding entry, because count === 0, it must be SAFE
+    expect(result.status).toBe("SAFE");
+  });
+
+  it("verifies multiple deterministic high-entropy random passwords are classified as SAFE", async () => {
+    const safePasswords = [
+      "X9#mK$2vL@8qZ!wP5tY7",
+      "Spotter_Gym_Secure_Test_2026_xYz987!",
+      "K9#vL2$mQ8@zP5!wY7tX",
+      "9f!A#b8$C7@d6%E5^F4&",
+      "Alpha$Bravo#Charlie*Delta99",
+    ];
+
+    const mockEmptyRange = (async () =>
+      new Response("0018A45C4D1DEF81644B54AB7F969B88D65:12\r\n")) as typeof fetch;
+
+    for (const pw of safePasswords) {
+      const result = await checkPwnedPassword(pw, mockEmptyRange);
+      expect(result.status).toBe("SAFE");
+    }
+  });
+
+  it("prevents partial or substring matches from causing false positives", async () => {
+    const password = "RandomTestPassword123!";
+    const sha1 = computePasswordSha1(password);
+    const suffix = sha1.slice(5);
+
+    // Mock response with a prefix of the suffix, or a longer string containing suffix
+    const partialSuffix = suffix.slice(0, 30);
+    const mockResponseText = `${partialSuffix}:45\r\n${suffix}EXTRA:10\r\nPRE${suffix}:20`;
+    const mockFetch = (async () =>
+      new Response(mockResponseText)) as typeof fetch;
 
     const result = await checkPwnedPassword(password, mockFetch);
     expect(result.status).toBe("SAFE");
+  });
+
+  it("matches suffixes case-insensitively when exact match with count > 0 is present", async () => {
+    const password = "BreachedMixedCasePass1";
+    const sha1 = computePasswordSha1(password);
+    const suffix = sha1.slice(5);
+
+    // Lowercase suffix returned by API with real breach count
+    const mockResponseText = `${suffix.toLowerCase()}:15`;
+    const mockFetch = (async () =>
+      new Response(mockResponseText)) as typeof fetch;
+
+    const result = await checkPwnedPassword(password, mockFetch);
+    expect(result.status).toBe("BREACHED");
+    if (result.status === "BREACHED") {
+      expect(result.count).toBe(15);
+    }
   });
 
   it("handles HIBP server errors with fail-closed policy", async () => {
@@ -460,6 +512,45 @@ describe("Have I Been Pwned (HIBP) Breached Password Protection", () => {
 
     const result = await checkPwnedPassword("TestPass123", mockNetworkErrorFetch);
     expect(result.status).toBe("ERROR");
+  });
+
+  it("verifies a returned HIBP record with a different suffix does NOT produce a false positive", async () => {
+    const password = "UniquePasswordNotBreached2026!";
+    const sha1 = computePasswordSha1(password);
+    const actualSuffix = sha1.slice(5);
+
+    // Completely different suffix in the range response
+    const differentSuffix = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+    expect(differentSuffix).not.toBe(actualSuffix);
+
+    const mockFetch = (async () =>
+      new Response(`${differentSuffix}:99999\r\n`)) as typeof fetch;
+
+    const result = await checkPwnedPassword(password, mockFetch);
+    expect(result.status).toBe("SAFE");
+  });
+
+  it("verifies prefix matching alone does NOT count as a breach", async () => {
+    const password = "HighEntropyTestPassword_2026_XYZ!";
+    const sha1 = computePasswordSha1(password);
+    const actualSuffix = sha1.slice(5);
+
+    // Simulate HIBP returning hundreds of records for this 5-char prefix,
+    // none of which match the actual 35-char suffix
+    const rangeLines: string[] = [];
+    for (let i = 0; i < 50; i++) {
+      const dummySuffix = i.toString(16).padStart(35, "0").toUpperCase();
+      if (dummySuffix !== actualSuffix) {
+        rangeLines.push(`${dummySuffix}:${i + 1}`);
+      }
+    }
+
+    const mockFetch = (async () =>
+      new Response(rangeLines.join("\r\n"))) as typeof fetch;
+
+    const result = await checkPwnedPassword(password, mockFetch);
+    // Despite 50 records sharing the same prefix, the password is SAFE because suffix didn't match
+    expect(result.status).toBe("SAFE");
   });
 });
 
@@ -676,6 +767,18 @@ describe("Reset Password HIBP Breached Check and Fail-Closed Security", () => {
     const password = "SafeUniqueResetPass99";
     const mockFetch = (async () =>
       new Response("00000000000000000000000000000000000:1\r\n")) as typeof fetch;
+
+    const result = await checkPwnedPassword(password, mockFetch);
+    expect(result.status).toBe("SAFE");
+  });
+
+  it("accepts reset password when HIBP response contains matching padding entry with count 0", async () => {
+    const password = "SafeUniqueResetPassWithPadding99";
+    const sha1 = computePasswordSha1(password);
+    const suffix = sha1.slice(5);
+
+    const mockFetch = (async () =>
+      new Response(`${suffix}:0\r\n00000000000000000000000000000000000:25\r\n`)) as typeof fetch;
 
     const result = await checkPwnedPassword(password, mockFetch);
     expect(result.status).toBe("SAFE");

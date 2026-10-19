@@ -9,6 +9,7 @@ import {
   getRateLimitHeaders,
 } from "../../../../lib/rate-limit";
 import { checkPwnedPassword } from "../../../../lib/hibp";
+import { issueMemberSession } from "../../../../lib/session";
 
 export async function POST(request: Request) {
   try {
@@ -104,10 +105,18 @@ export async function POST(request: Request) {
       },
     });
 
-    // 7. Create response with server session cookie (never exposing password or hash)
+    // 7. Issue a fresh authenticated session token for the new member
+    const userAgent = request.headers.get("user-agent") || undefined;
+    const session = await issueMemberSession(newMember.id, {
+      ipAddress: clientIp,
+      userAgent,
+    });
+
+    // 8. Create response with server session cookie (never exposing password or hash)
     const response = NextResponse.json(
       {
         success: true,
+        sessionToken: session.rawToken,
         member: {
           id: newMember.id,
           fullName: newMember.fullName,
@@ -123,12 +132,13 @@ export async function POST(request: Request) {
       }
     );
 
-    // Set server-side HTTP-only session cookie
-    response.cookies.set("spotter_session", newMember.id, {
+    // Set server-side HTTP-only session cookie with the raw session token (hashed in DB)
+    response.cookies.set("spotter_session", session.rawToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
+      expires: session.expiresAt,
     });
 
     return response;

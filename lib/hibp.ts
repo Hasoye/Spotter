@@ -7,7 +7,7 @@ export const HIBP_REQUEST_TIMEOUT_MS = 3500;
 
 export type HibpCheckResult =
   | { status: "SAFE" }
-  | { status: "BREACHED" }
+  | { status: "BREACHED"; count?: number }
   | { status: "ERROR"; error: string };
 
 /**
@@ -74,12 +74,39 @@ export async function checkPwnedPassword(
     const text = await response.text();
     const lines = text.split(/\r?\n/);
 
-    // Look for matching suffix locally
-    for (const line of lines) {
-      const [hashSuffix] = line.split(":");
-      if (hashSuffix && hashSuffix.trim().toUpperCase() === suffix) {
-        return { status: "BREACHED" };
+    let exactMatchFound = false;
+    let matchedCount = 0;
+
+    // Look for matching suffix locally with strict parsing and validation
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line) continue;
+
+      const colonIndex = line.indexOf(":");
+      if (colonIndex === -1) continue;
+
+      const hashSuffix = line.slice(0, colonIndex).trim().toUpperCase();
+      const countStr = line.slice(colonIndex + 1).trim();
+
+      // Ensure suffix is valid 35-character hex
+      if (hashSuffix.length !== 35 || !/^[0-9A-F]{35}$/.test(hashSuffix)) {
+        continue;
       }
+
+      const count = parseInt(countStr, 10);
+      if (isNaN(count)) continue;
+
+      // When Add-Padding is enabled, HIBP injects padding records with count = 0.
+      // A password is only breached if there is an exact suffix match AND count > 0.
+      if (hashSuffix === suffix && count > 0) {
+        exactMatchFound = true;
+        matchedCount = count;
+        break;
+      }
+    }
+
+    if (exactMatchFound) {
+      return { status: "BREACHED", count: matchedCount };
     }
 
     return { status: "SAFE" };
