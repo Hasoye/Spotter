@@ -129,7 +129,7 @@ export default function LandingPage({
           </p>
           <div className="heroActions">
             <Link
-              href="/signup"
+              href="/auth?mode=signup"
               className="heroActionPrimary"
               id="hero-signup"
             >
@@ -248,7 +248,7 @@ function PrivacyPolicyView() {
           personal data from being accidentally lost, used, or accessed in an
           unauthorized way, altered, or disclosed. Your private records are
           fetched by exact member ID only and are never searched across other
-          members' data.
+          members&apos; data.
         </p>
 
         <h2>4. Your Legal Rights</h2>
@@ -285,7 +285,7 @@ function TermsOfServiceView() {
         <h2>1. App Usage and Scope</h2>
         <p>
           Spotter is a retrieval-only application designed to provide you with
-          information from the gym's records. You can use the app to check in by
+          information from the gym&apos;s records. You can use the app to check in by
           QR code, ask questions regarding gym rules or your private records
           (like balance and expiry), and pay or renew your membership. The app
           does not allow class booking, reservation, or social features.

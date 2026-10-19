@@ -1,15 +1,10 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { prisma } from "../../../../lib/prisma";
-
-const sendOtpSchema = z.object({
-  phoneNumber: z
-    .string()
-    .min(10, "Phone number must be at least 10 digits")
-    .regex(/^\+?[0-9\s-]+$/, "Invalid phone number format"),
-});
+import { logger } from "../../../../lib/logger";
+import { sendOtpSchema } from "../../../../lib/validations";
 
 export async function POST(request: Request) {
+  let requestMode: string | undefined;
   try {
     const body = await request.json();
     const result = sendOtpSchema.safeParse(body);
@@ -21,17 +16,25 @@ export async function POST(request: Request) {
       );
     }
 
-    const { phoneNumber } = result.data;
+    const { phoneNumber, mode } = result.data;
+    requestMode = mode;
 
     // Check if phone number is already registered
     const existing = await prisma.member.findUnique({
       where: { phoneNumber },
     });
 
-    if (existing) {
+    if (mode === "signup" && existing) {
       return NextResponse.json(
         { error: "This phone number is already registered. Please log in instead." },
         { status: 409 }
+      );
+    }
+
+    if (mode === "login" && !existing) {
+      return NextResponse.json(
+        { error: "No account found with this phone number. Please sign up first." },
+        { status: 404 }
       );
     }
 
@@ -46,9 +49,19 @@ export async function POST(request: Request) {
       { status: 200 }
     );
   } catch (error) {
+    logger.error(
+      "Failed to process send-otp request",
+      {
+        operation: "sendOtp",
+        mode: requestMode,
+      },
+      error
+    );
+
     return NextResponse.json(
       { error: "Failed to send verification code. Please try again." },
       { status: 500 }
     );
   }
 }
+

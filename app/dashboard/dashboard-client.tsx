@@ -40,18 +40,29 @@ const STAFF_ROUTED_KEYWORDS = [
   "gate fault",
 ];
 
-export default function ClientMemberPortal() {
-  // Mock logged-in session data per PRD specs
+export default function ClientMemberPortal({
+  initialMember,
+}: {
+  initialMember?: { id: string; name: string; tier: MemberTier };
+}) {
   const [member] = useState<MemberState>({
-    id: "mem_101",
-    name: "Member Portal",
-    tier: "PREMIUM",
+    id: initialMember?.id || "mem_101",
+    name: initialMember?.name || "Member Portal",
+    tier: initialMember?.tier || "PREMIUM",
     isExpired: false,
     attendanceCount: 14,
     balanceKobo: 0,
     expiresAt: "2026-11-30T00:00:00.000Z",
     lastConfirmedAt: "2026-10-05T18:00:00.000Z",
   });
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      window.location.href = "/auth?mode=login";
+    }
+  };
 
   const [staffOnDuty] = useState("Alex (Front Desk Staff)");
   const [questionText, setQuestionText] = useState("");
@@ -190,15 +201,51 @@ export default function ClientMemberPortal() {
   return (
     <div className="homeContainer">
       <header className="homeHeader">
-        <div className="brandBar">
-          <img src="/icon.svg" alt="SPOTTER" width="32" height="32" />
-          <span
-            className={`tierBadge ${
-              member.tier === "PREMIUM" ? "tierBadgePremium" : "tierBadgeBasic"
-            }`}
+        <div
+          className="brandBar"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <img src="/icon.svg" alt="SPOTTER" width="32" height="32" />
+            <span
+              className={`tierBadge ${
+                member.tier === "PREMIUM"
+                  ? "tierBadgePremium"
+                  : "tierBadgeBasic"
+              }`}
+            >
+              {member.tier} TIER
+            </span>
+            <span
+              style={{
+                fontSize: "13px",
+                color: "var(--color-text-secondary, #94a3b8)",
+                marginLeft: "8px",
+              }}
+            >
+              {member.name}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={handleLogout}
+            style={{
+              background: "transparent",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              color: "#e2e8f0",
+              borderRadius: "6px",
+              padding: "6px 12px",
+              fontSize: "13px",
+              cursor: "pointer",
+            }}
+            id="member-logout-button"
           >
-            {member.tier} TIER
-          </span>
+            Log Out
+          </button>
         </div>
         <h2 className="homeHeadline">Gym Member Portal</h2>
         <p className="homeSubtitle">
@@ -288,7 +335,7 @@ export default function ClientMemberPortal() {
                   onClick={handleFlagWrongAnswer}
                   className="flagButton"
                 >
-                  This doesn't look right
+                  This doesn&apos;t look right
                 </button>
               )}
             </div>

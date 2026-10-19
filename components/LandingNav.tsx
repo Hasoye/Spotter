@@ -51,10 +51,10 @@ export default function LandingNav() {
             </svg>
           </button>
         </div>
-        <Link href="/login" className="navLinkSecondary" id="nav-login" onClick={() => setIsMenuOpen(false)}>
+        <Link href="/auth?mode=login" className="navLinkSecondary" id="nav-login" onClick={() => setIsMenuOpen(false)}>
           Log In
         </Link>
-        <Link href="/signup" className="navLinkPrimary" id="nav-signup" onClick={() => setIsMenuOpen(false)}>
+        <Link href="/auth?mode=signup" className="navLinkPrimary" id="nav-signup" onClick={() => setIsMenuOpen(false)}>
           Sign Up
         </Link>
       </div>
