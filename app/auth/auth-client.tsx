@@ -287,6 +287,10 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
       }
 
       setLoginStep("SUCCESS");
+      if (typeof document !== "undefined") {
+        document.cookie =
+          "spotter_onboarded=true; path=/; max-age=31536000; SameSite=Lax";
+      }
       setTimeout(() => router.push("/dashboard"), 1200);
     } catch {
       setErrors({
@@ -360,7 +364,7 @@ export default function AuthClient({ initialMode }: { initialMode: AuthMode }) {
       }
 
       setSignupStep("SUCCESS");
-      setTimeout(() => router.push("/dashboard"), 1200);
+      setTimeout(() => router.push("/onboarding"), 1200);
     } catch {
       setErrors({ form: "Network error. Unable to complete registration." });
     } finally {

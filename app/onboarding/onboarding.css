@@ -1,0 +1,261 @@
+/* ==========================================================================
+   SPOTTER Modern Onboarding Experience
+   Adheres to SPOTTER design tokens, DM Sans typography, and sleek modern SaaS aesthetic.
+   ========================================================================== */
+
+.onboardingPage {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: var(--color-roles-surface-container-lowest, #f6fef9);
+  box-sizing: border-box;
+}
+
+.onboardingCard {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border: 1px solid color-mix(in srgb, var(--color-roles-outline, #717975) 20%, transparent);
+  border-radius: 20px;
+  box-shadow: 0 16px 40px -8px rgba(0, 33, 22, 0.08), 0 4px 12px -2px rgba(0, 33, 22, 0.04);
+  padding: 32px 32px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle brand watermark / accent bar at top */
+.onboardingCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-roles-primary, #009973),
+    var(--primitives-colour-pallete-primary-primary80, #00e1a8)
+  );
+}
+
+/* Progress indicator row */
+.onboardingProgressRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.onboardingBrand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--typography-title-medium-font-family, "DM Sans"), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--color-roles-primary, #009973);
+}
+
+.onboardingDots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.onboardingDot {
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-roles-outline, #717975) 30%, transparent);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.onboardingDotActive {
+  width: 24px;
+  border-radius: 9999px;
+  background: var(--color-roles-primary, #009973);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-roles-primary, #009973) 40%, transparent);
+}
+
+/* Slide container and subtle transitions */
+.onboardingSlide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.onboardingSlideVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.onboardingSlideEntering {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* Large visual / illustration container */
+.onboardingVisualArea {
+  width: 100%;
+  height: 200px;
+  border-radius: 16px;
+  background: linear-gradient(
+    145deg,
+    var(--primitives-colour-pallete-neutral-neutral98, #f4fff7) 0%,
+    var(--primitives-colour-pallete-neutral-neutral94, #e8f0eb) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--color-roles-primary, #009973) 15%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0, 33, 22, 0.03);
+}
+
+/* Illustration styling */
+.onboardingIllustration {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Content typography */
+.onboardingContent {
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.onboardingTitle {
+  margin: 0 0 10px;
+  font-family: var(--typography-headline-small-font-family, "DM Sans"), sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+  color: var(--color-roles-on-surface, #161d1a);
+}
+
+.onboardingBody {
+  margin: 0 auto;
+  max-width: 380px;
+  font-family: var(--typography-body-medium-font-family, "DM Sans"), sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.1px;
+  color: var(--color-roles-on-surface-variant, #51625a);
+}
+
+/* Action button area */
+.onboardingActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.onboardingPrimaryBtn {
+  font-family: var(--typography-label-large-font-family, "DM Sans"), sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  background: var(--color-roles-primary, #009973);
+  color: var(--color-roles-on-primary, #ffffff);
+  border: none;
+  border-radius: 10px;
+  padding: 13px 24px;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: var(--effect-medium-shadow, 0 4px 14px rgba(0, 153, 115, 0.25));
+}
+
+.onboardingPrimaryBtn:hover:not(:disabled) {
+  background: var(--color-roles-on-primary-container, #00513b);
+  box-shadow: var(--effect-hard-shadow, 0 6px 18px rgba(0, 153, 115, 0.35));
+  transform: translateY(-1px);
+}
+
+.onboardingPrimaryBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.onboardingPrimaryBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Subordinate Skip button */
+.onboardingSkipBtn {
+  font-family: var(--typography-label-medium-font-family, "DM Sans"), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-roles-on-surface-variant, #51625a);
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+}
+
+.onboardingSkipBtn:hover:not(:disabled) {
+  color: var(--color-roles-on-surface, #161d1a);
+  background: color-mix(in srgb, var(--color-roles-outline, #717975) 12%, transparent);
+}
+
+.onboardingSkipBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.onboardingSkipBtn:focus-visible,
+.onboardingPrimaryBtn:focus-visible {
+  outline: 2px solid var(--color-roles-primary, #009973);
+  outline-offset: 2px;
+}
+
+/* Mobile responsive layout */
+@media (max-width: 480px) {
+  .onboardingCard {
+    padding: 24px 20px 20px;
+    border-radius: 16px;
+  }
+
+  .onboardingVisualArea {
+    height: 170px;
+    margin-bottom: 22px;
+  }
+
+  .onboardingTitle {
+    font-size: 21px;
+  }
+
+  .onboardingBody {
+    font-size: 14px;
+  }
+
+  .onboardingContent {
+    margin-bottom: 24px;
+  }
+}

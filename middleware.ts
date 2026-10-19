@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PROTECTED_PREFIXES = ["/dashboard", "/member", "/settings", "/profile"];
+const PROTECTED_PREFIXES = [
+  "/dashboard",
+  "/member",
+  "/settings",
+  "/profile",
+  "/onboarding",
+];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -14,6 +20,7 @@ export async function middleware(request: NextRequest) {
     pathname === "/auth" || pathname === "/login" || pathname === "/signup";
 
   const sessionCookie = request.cookies.get("spotter_session")?.value;
+  const isOnboarded = request.cookies.get("spotter_onboarded")?.value === "true";
 
   // 1. If trying to access a protected page without a session cookie, ask user to log in
   if (isProtected && !sessionCookie) {
@@ -37,6 +44,11 @@ export async function middleware(request: NextRequest) {
         if (data.valid && data.member) {
           // If already authenticated and visiting login/signup, redirect to dashboard
           if (isAuthPage) {
+            return NextResponse.redirect(new URL("/dashboard", request.url));
+          }
+
+          // If member has already completed onboarding, redirect away from /onboarding to /dashboard
+          if (pathname === "/onboarding" && isOnboarded) {
             return NextResponse.redirect(new URL("/dashboard", request.url));
           }
 

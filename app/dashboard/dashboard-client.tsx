@@ -335,7 +335,7 @@ export default function ClientMemberPortal({
                   onClick={handleFlagWrongAnswer}
                   className="flagButton"
                 >
-                  This doesn't look right
+                  This doesn&apos;t look right
                 </button>
               )}
             </div>
