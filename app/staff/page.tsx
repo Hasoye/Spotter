@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { headers, cookies } from "next/headers";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import {
-  getValidStaffSession,
-  STAFF_COOKIE_NAME,
-} from "../../lib/staff-session";
+import { STAFF_COOKIE_NAME } from "../../lib/staff-session";
+import { requireStaffRole, RECEPTIONIST_ROLES } from "../../lib/rbac";
 import StaffDashboardClient from "./staff-dashboard-client";
 
 export const metadata: Metadata = {
@@ -13,48 +11,34 @@ export const metadata: Metadata = {
 };
 
 export default async function StaffPage() {
-  const headerList = headers();
-  let staffId = headerList.get("x-staff-id");
-  let staffName = headerList.get("x-staff-name");
-  let staffRole = headerList.get("x-staff-role");
-  let staffEmail = headerList.get("x-staff-email");
+  const cookieStore = cookies();
+  const token = cookieStore.get(STAFF_COOKIE_NAME)?.value;
 
-  // Fallback: If middleware didn't populate headers (e.g. direct server render), verify from cookie
-  if (!staffId) {
-    const cookieStore = cookies();
-    const token = cookieStore.get(STAFF_COOKIE_NAME)?.value;
-    if (!token) {
-      redirect("/secure/desk-access");
-    }
+  if (!token) {
+    redirect("/secure/desk-access");
+  }
 
-    const session = await getValidStaffSession(token);
-    if (!session || !session.staff) {
-      redirect("/secure/desk-access?error=session_expired");
-    }
+  // Authoritative database-backed RBAC validation
+  const auth = await requireStaffRole(token, RECEPTIONIST_ROLES);
 
-    if (session.staff.role !== "FRONT_DESK" && session.staff.role !== "OWNER") {
+  if (!auth.authorized) {
+    if (auth.reason === "FORBIDDEN") {
       redirect("/secure/desk-access?error=unauthorized_role");
     }
-
-    staffId = session.staff.id;
-    staffName = session.staff.fullName;
-    staffRole = session.staff.role;
-    staffEmail = session.staff.email;
+    redirect("/secure/desk-access?error=session_expired");
   }
 
-  // Double check authorization server-side
-  if (staffRole !== "FRONT_DESK" && staffRole !== "OWNER") {
-    redirect("/secure/desk-access?error=unauthorized_role");
-  }
+  const staff = auth.staff;
 
   return (
     <StaffDashboardClient
       staff={{
-        id: staffId,
-        fullName: staffName || "Staff Member",
-        role: staffRole,
-        email: staffEmail,
+        id: staff.id,
+        fullName: staff.fullName || "Staff Member",
+        role: staff.role,
+        email: staff.email,
       }}
     />
   );
 }
+

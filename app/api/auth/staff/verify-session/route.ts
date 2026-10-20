@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import {
-  getValidStaffSession,
-  STAFF_COOKIE_NAME,
-} from "../../../../../lib/staff-session";
+import { STAFF_COOKIE_NAME } from "../../../../../lib/staff-session";
+import { requireStaffRole, StaffRole } from "../../../../../lib/rbac";
 import { logger } from "../../../../../lib/logger";
 
 export const dynamic = "force-dynamic";
@@ -21,12 +19,15 @@ export async function GET(request: Request) {
       );
     }
 
-    const session = await getValidStaffSession(sessionToken);
+    const auth = await requireStaffRole(sessionToken, [
+      StaffRole.FRONT_DESK,
+      StaffRole.OWNER,
+    ]);
 
-    if (!session) {
+    if (!auth.authorized) {
       return NextResponse.json(
-        { valid: false, error: "Staff session invalid, expired, or staff deactivated" },
-        { status: 401 }
+        { valid: false, error: auth.error, reason: auth.reason },
+        { status: auth.status }
       );
     }
 
@@ -34,12 +35,12 @@ export async function GET(request: Request) {
       {
         valid: true,
         staff: {
-          id: session.staff.id,
-          fullName: session.staff.fullName,
-          email: session.staff.email,
-          phoneNumber: session.staff.phoneNumber,
-          role: session.staff.role,
-          isActive: session.staff.isActive,
+          id: auth.staff.id,
+          fullName: auth.staff.fullName,
+          email: auth.staff.email,
+          phoneNumber: auth.staff.phoneNumber,
+          role: auth.staff.role,
+          isActive: auth.staff.isActive,
         },
       },
       { status: 200 }

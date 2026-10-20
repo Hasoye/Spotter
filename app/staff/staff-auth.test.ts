@@ -43,6 +43,12 @@ import {
   getValidStaffSession,
   revokeStaffSession,
 } from "../../lib/staff-session";
+import {
+  requireStaffRole,
+  requireStaffRoleFromRequest,
+  RECEPTIONIST_ROLES,
+  StaffRole,
+} from "../../lib/rbac";
 import { POST as staffLoginRoute } from "../api/auth/staff/login/route";
 import { POST as staffLogoutRoute } from "../api/auth/staff/logout/route";
 import { GET as staffVerifySessionRoute } from "../api/auth/staff/verify-session/route";
@@ -569,7 +575,7 @@ describe("Member Number Generation API (POST /api/staff/generate-member-number)"
     const res = await generateMemberNumberRoute(req);
     expect(res.status).toBe(403);
     const data = await res.json();
-    expect(data.error).toContain("Receptionist (FRONT_DESK) permission required");
+    expect(data.error).toContain("not authorized");
   });
 
   it("generates unique member number for new intending member (201)", async () => {
@@ -730,3 +736,277 @@ describe("Member Number Generation API (POST /api/staff/generate-member-number)"
     expect(data.error).toContain("Member is already registered with member number: SPT-2026-1111");
   });
 });
+
+describe("Database-Backed Role-Based Access Control (lib/rbac.ts)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("authorizes FRONT_DESK role from database", async () => {
+    const rawToken = generateSessionToken();
+    const hashed = hashSessionToken(rawToken);
+
+    (prisma.staffSession.findUnique as any).mockResolvedValue({
+      id: "sess_1",
+      sessionToken: hashed,
+      expiresAt: new Date(Date.now() + 3600000),
+      revokedAt: null,
+      staff: {
+        id: "staff_1",
+        fullName: "Front Desk Staff",
+        role: StaffRole.FRONT_DESK,
+        isActive: true,
+      },
+    });
+
+    const result = await requireStaffRole(rawToken);
+    expect(result.authorized).toBe(true);
+    if (result.authorized) {
+      expect(result.staff.role).toBe(StaffRole.FRONT_DESK);
+    }
+  });
+
+  it("authorizes OWNER role for receptionist operations", async () => {
+    const rawToken = generateSessionToken();
+    const hashed = hashSessionToken(rawToken);
+
+    (prisma.staffSession.findUnique as any).mockResolvedValue({
+      id: "sess_owner",
+      sessionToken: hashed,
+      expiresAt: new Date(Date.now() + 3600000),
+      revokedAt: null,
+      staff: {
+        id: "staff_owner",
+        fullName: "Gym Owner",
+        role: StaffRole.OWNER,
+        isActive: true,
+      },
+    });
+
+    const result = await requireStaffRole(rawToken);
+    expect(result.authorized).toBe(true);
+    if (result.authorized) {
+      expect(result.staff.role).toBe(StaffRole.OWNER);
+    }
+  });
+
+  it("rejects unauthorized staff role from database", async () => {
+    const rawToken = generateSessionToken();
+    const hashed = hashSessionToken(rawToken);
+
+    (prisma.staffSession.findUnique as any).mockResolvedValue({
+      id: "sess_trainer",
+      sessionToken: hashed,
+      expiresAt: new Date(Date.now() + 3600000),
+      revokedAt: null,
+      staff: {
+        id: "staff_trainer",
+        fullName: "Gym Trainer",
+        role: "TRAINER" as any,
+        isActive: true,
+      },
+    });
+
+    const result = await requireStaffRole(rawToken, [StaffRole.FRONT_DESK]);
+    expect(result.authorized).toBe(false);
+    if (!result.authorized) {
+      expect(result.reason).toBe("FORBIDDEN");
+      expect(result.status).toBe(403);
+    }
+  });
+
+  it("rejects unauthenticated requests without session token", async () => {
+    const result = await requireStaffRole(null);
+    expect(result.authorized).toBe(false);
+    if (!result.authorized) {
+      expect(result.reason).toBe("UNAUTHENTICATED");
+      expect(result.status).toBe(401);
+    }
+  });
+
+  it("rejects inactive/deactivated staff members", async () => {
+    const rawToken = generateSessionToken();
+    const hashed = hashSessionToken(rawToken);
+
+    (prisma.staffSession.findUnique as any).mockResolvedValue({
+      id: "sess_inactive",
+      sessionToken: hashed,
+      expiresAt: new Date(Date.now() + 3600000),
+      revokedAt: null,
+      staff: {
+        id: "staff_inactive",
+        fullName: "Deactivated Staff",
+        role: StaffRole.FRONT_DESK,
+        isActive: false,
+      },
+    });
+
+    const result = await requireStaffRole(rawToken);
+    expect(result.authorized).toBe(false);
+    if (!result.authorized) {
+      expect(result.reason).toBe("STAFF_INACTIVE");
+      expect(result.status).toBe(403);
+    }
+  });
+
+  it("rejects revoked staff sessions", async () => {
+    const rawToken = generateSessionToken();
+    const hashed = hashSessionToken(rawToken);
+
+    (prisma.staffSession.findUnique as any).mockResolvedValue({
+      id: "sess_revoked",
+      sessionToken: hashed,
+      expiresAt: new Date(Date.now() + 3600000),
+      revokedAt: new Date(),
+      staff: {
+        id: "staff_1",
+        role: StaffRole.FRONT_DESK,
+        isActive: true,
+      },
+    });
+
+    const result = await requireStaffRole(rawToken);
+    expect(result.authorized).toBe(false);
+    if (!result.authorized) {
+      expect(result.reason).toBe("SESSION_REVOKED");
+      expect(result.status).toBe(401);
+    }
+  });
+
+  it("client-provided role cannot override database role", async () => {
+    const rawToken = generateSessionToken();
+    const hashed = hashSessionToken(rawToken);
+
+    (prisma.staffSession.findUnique as any).mockResolvedValue({
+      id: "sess_front_desk",
+      sessionToken: hashed,
+      expiresAt: new Date(Date.now() + 3600000),
+      revokedAt: null,
+      staff: {
+        id: "staff_fd",
+        fullName: "Real Front Desk",
+        role: StaffRole.FRONT_DESK,
+        isActive: true,
+      },
+    });
+
+    const req = new Request("http://localhost:3000/api/staff/test?role=OWNER", {
+      headers: {
+        cookie: `${STAFF_COOKIE_NAME}=${rawToken}; role=OWNER`,
+        "x-staff-role": "OWNER",
+      },
+      body: JSON.stringify({ role: "OWNER" }),
+      method: "POST",
+    });
+
+    const result = await requireStaffRoleFromRequest(req, [StaffRole.OWNER]);
+    expect(result.authorized).toBe(false);
+    if (!result.authorized) {
+      expect(result.reason).toBe("FORBIDDEN");
+      expect(result.status).toBe(403);
+    }
+  });
+
+  it("changing a staff role in database dynamically updates authorization", async () => {
+    const rawToken = generateSessionToken();
+    const hashed = hashSessionToken(rawToken);
+
+    (prisma.staffSession.findUnique as any).mockResolvedValueOnce({
+      id: "sess_changing",
+      sessionToken: hashed,
+      expiresAt: new Date(Date.now() + 3600000),
+      revokedAt: null,
+      staff: {
+        id: "staff_dyn",
+        role: StaffRole.FRONT_DESK,
+        isActive: true,
+      },
+    });
+
+    const firstCheck = await requireStaffRole(rawToken, [StaffRole.FRONT_DESK]);
+    expect(firstCheck.authorized).toBe(true);
+
+    (prisma.staffSession.findUnique as any).mockResolvedValueOnce({
+      id: "sess_changing",
+      sessionToken: hashed,
+      expiresAt: new Date(Date.now() + 3600000),
+      revokedAt: null,
+      staff: {
+        id: "staff_dyn",
+        role: "RETIRED" as any,
+        isActive: true,
+      },
+    });
+
+    const secondCheck = await requireStaffRole(rawToken, [StaffRole.FRONT_DESK]);
+    expect(secondCheck.authorized).toBe(false);
+    if (!secondCheck.authorized) {
+      expect(secondCheck.reason).toBe("FORBIDDEN");
+    }
+  });
+
+  it("member session (spotter_session) cannot authorize staff operations", async () => {
+    const req = new Request("http://localhost:3000/api/staff/generate-member-number", {
+      headers: {
+        cookie: "spotter_session=raw-member-session-token",
+      },
+    });
+
+    const result = await requireStaffRoleFromRequest(req);
+    expect(result.authorized).toBe(false);
+    if (!result.authorized) {
+      expect(result.reason).toBe("UNAUTHENTICATED");
+      expect(result.status).toBe(401);
+    }
+  });
+
+  it("OWNER can generate member numbers via generate-member-number endpoint", async () => {
+    const rawToken = generateSessionToken();
+    const hashed = hashSessionToken(rawToken);
+
+    (prisma.staffSession.findUnique as any).mockResolvedValue({
+      id: "sess_owner",
+      sessionToken: hashed,
+      expiresAt: new Date(Date.now() + 3600000),
+      revokedAt: null,
+      staff: {
+        id: "staff_owner_1",
+        fullName: "Owner Boss",
+        role: StaffRole.OWNER,
+        isActive: true,
+      },
+    });
+
+    (prisma.member.findUnique as any).mockResolvedValue(null);
+    (prisma.member.create as any).mockImplementation(({ data }: any) =>
+      Promise.resolve({
+        id: "new_owner_created_member",
+        fullName: data.fullName,
+        phoneNumber: data.phoneNumber,
+        memberNumber: data.memberNumber,
+        tier: data.tier,
+        createdAt: new Date(),
+      })
+    );
+
+    const req = new Request("http://localhost:3000/api/staff/generate-member-number", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        cookie: `${STAFF_COOKIE_NAME}=${rawToken}`,
+      },
+      body: JSON.stringify({
+        fullName: "VIP Intending Member",
+        phoneNumber: "08011223344",
+        tier: "PREMIUM",
+      }),
+    });
+
+    const res = await generateMemberNumberRoute(req);
+    expect(res.status).toBe(201);
+    const data = await res.json();
+    expect(data.success).toBe(true);
+    expect(data.member.memberNumber).toMatch(/^SPT-\d{4}-\d+$/);
+  });
+});
+

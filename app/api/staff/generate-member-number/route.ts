@@ -2,42 +2,19 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
 import { logger } from "../../../../lib/logger";
 import { generateMemberNumberSchema } from "../../../../lib/validations";
-import {
-  getValidStaffSession,
-  STAFF_COOKIE_NAME,
-} from "../../../../lib/staff-session";
+import { requireStaffRoleFromRequest, RECEPTIONIST_ROLES } from "../../../../lib/rbac";
 import { generateServerMemberNumber } from "../../../../lib/member-number";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
-    // 1. Authenticate staff session server-side
-    const cookieHeader = request.headers.get("cookie") || "";
-    const regex = new RegExp(`${STAFF_COOKIE_NAME}=([^;]+)`);
-    const match = cookieHeader.match(regex);
-    const sessionToken = match ? decodeURIComponent(match[1]) : null;
-
-    if (!sessionToken) {
+    // 1. Authoritative Server-Side RBAC check
+    const auth = await requireStaffRoleFromRequest(request, RECEPTIONIST_ROLES);
+    if (!auth.authorized) {
       return NextResponse.json(
-        { error: "Unauthorized. Staff session cookie required." },
-        { status: 401 }
-      );
-    }
-
-    const session = await getValidStaffSession(sessionToken);
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized. Staff session is invalid or expired." },
-        { status: 401 }
-      );
-    }
-
-    // 2. Enforce FRONT_DESK or OWNER role permission
-    if (session.staff.role !== "FRONT_DESK" && session.staff.role !== "OWNER") {
-      return NextResponse.json(
-        { error: "Forbidden. Receptionist (FRONT_DESK) permission required." },
-        { status: 403 }
+        { error: auth.error, reason: auth.reason },
+        { status: auth.status }
       );
     }
 

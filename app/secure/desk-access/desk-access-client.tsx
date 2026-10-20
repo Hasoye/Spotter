@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
-import "../../auth/auth.css";
+import "./desk-access.css";
 
 export default function DeskAccessClient() {
   const router = useRouter();
@@ -72,29 +72,30 @@ export default function DeskAccessClient() {
   };
 
   return (
-    <div className="authPage">
-      <div className="authCard">
-        <header className="authHeader">
-          <Link href="/" style={{ textDecoration: "none" }}>
+    <div className="authPage deskAccessPage">
+      <div className="authCard deskAccessCard">
+        <header className="authHeader deskAccessHeader">
+          <Link href="/" style={{ textDecoration: "none" }} aria-label="SPOTTER Home">
             <img
               src="/icon.svg"
               alt="SPOTTER"
               width="36"
               height="36"
-              style={{ margin: "0 auto", display: "block" }}
+              className="deskAccessLogo"
+              style={{ margin: "0 auto 8px", display: "block" }}
             />
           </Link>
-          <h2 className="authTitle">Staff Desk Access</h2>
-          <p className="authSubtitle">Log in with your front desk credentials</p>
+          <h2 className="authTitle deskAccessTitle">Staff Desk Access</h2>
+          <p className="authSubtitle deskAccessSubtitle">Log in with your front desk credentials</p>
         </header>
 
         {serverError && (
-          <div className="authAlert authAlertError" role="alert">
-            <p className="authAlertText">{serverError}</p>
+          <div className="authAlert authAlertError deskAccessAlert" role="alert">
+            <p className="authAlertText deskAccessAlertText">{serverError}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="authForm" noValidate>
+        <form onSubmit={handleSubmit} className="authForm deskAccessForm" noValidate>
           <Input
             id="desk-identifier"
             label="Staff Email or Phone Number"
@@ -129,6 +130,7 @@ export default function DeskAccessClient() {
             type="submit"
             variant="primary"
             isLoading={isLoading}
+            id="desk-submit-btn"
             style={{ width: "100%", marginTop: "6px" }}
           >
             Sign In to Desk
@@ -138,3 +140,4 @@ export default function DeskAccessClient() {
     </div>
   );
 }
+
