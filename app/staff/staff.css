@@ -1,0 +1,214 @@
+/* Staff / Receptionist Portal Styling using SPOTTER Design Tokens */
+
+.staffLayout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-roles-surface);
+  color: var(--color-roles-on-surface);
+  font-family: var(--typography-body-large-font-family);
+}
+
+.staffHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: var(--color-roles-surface-container-high);
+  border-bottom: 1px solid var(--color-roles-outline-variant);
+}
+
+.staffHeaderBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.staffLogoBadge {
+  background: var(--color-roles-primary-container);
+  color: var(--color-roles-on-primary-container);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-roles-outline);
+}
+
+.staffHeaderTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-roles-on-surface);
+  margin: 0;
+}
+
+.staffUserBadge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.staffRolePill {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: var(--color-roles-secondary-container);
+  color: var(--color-roles-on-secondary-container);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.staffAuthContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  background: radial-gradient(
+    circle at 50% 20%,
+    var(--color-roles-surface-container-lowest) 0%,
+    var(--color-roles-surface) 100%
+  );
+}
+
+.staffCard {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--color-roles-surface-container);
+  border: 1px solid var(--color-roles-outline-variant);
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: var(--elevation-level2-shadow, 0 8px 24px rgba(0, 0, 0, 0.4));
+  box-sizing: border-box;
+}
+
+.staffCardHeader {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.staffNoticePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background-color: var(--color-roles-surface-container-highest);
+  color: var(--color-roles-primary);
+  border: 1px solid var(--color-roles-outline);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.staffNoticePill svg {
+  width: 14px;
+  height: 14px;
+}
+
+.staffTitle {
+  font-family: var(--typography-title-large-font-family);
+  font-size: var(--typography-title-large-font-size, 24px);
+  font-weight: 700;
+  color: var(--color-roles-on-surface);
+  margin: 0 0 6px 0;
+}
+
+.staffSubtitle {
+  font-size: 14px;
+  color: var(--color-roles-on-surface-variant);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.staffForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.staffAlert {
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+.staffAlertError {
+  background-color: var(--color-roles-error-container);
+  color: var(--color-roles-on-error-container);
+  border: 1px solid var(--color-roles-error);
+}
+
+.staffSecurityNote {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-roles-outline-variant);
+  font-size: 12px;
+  color: var(--color-roles-on-surface-variant);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.staffSecurityNote svg {
+  flex-shrink: 0;
+  color: var(--color-roles-primary);
+}
+
+/* Staff Dashboard Main Styling */
+.staffDashboardContent {
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 20px;
+  box-sizing: border-box;
+}
+
+.staffDashboardCard {
+  background-color: var(--color-roles-surface-container);
+  border: 1px solid var(--color-roles-outline-variant);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.staffDashboardCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-roles-outline-variant);
+  padding-bottom: 12px;
+}
+
+.staffActionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.staffActionTile {
+  background-color: var(--color-roles-surface-container-high);
+  border: 1px solid var(--color-roles-outline-variant);
+  border-radius: 10px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.staffActionTile:hover {
+  border-color: var(--color-roles-primary);
+}

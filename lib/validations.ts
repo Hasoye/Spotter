@@ -137,3 +137,35 @@ export const resetPasswordSchema = z
   });
 
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+
+/**
+ * Server validation schema for POST /api/auth/staff/login
+ * Validates identifier (email or phone number) and password.
+ */
+export const staffLoginSchema = z.object({
+  identifier: z
+    .string()
+    .trim()
+    .min(3, "Identifier must be at least 3 characters")
+    .max(100, "Identifier is too long"),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .max(128, "Password is too long"),
+});
+
+export type StaffLoginInput = z.infer<typeof staffLoginSchema>;
+
+/**
+ * Server validation schema for POST /api/staff/generate-member-number
+ * Used by front desk receptionists to generate and allocate a member number.
+ */
+export const generateMemberNumberSchema = z.object({
+  fullName: fullNameSchema,
+  phoneNumber: phoneNumberSchema,
+  tier: membershipTierSchema.default("BASIC"),
+});
+
+export type GenerateMemberNumberInput = z.infer<typeof generateMemberNumberSchema>;
+
+
