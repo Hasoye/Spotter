@@ -36,3 +36,15 @@ Thumbs.db
 # prisma
 prisma/*.db
 prisma/*.db-journal
+
+# Agent context folders (at any depth)
+.agent/
+.agents/
+agent/
+agents/
+skills/
+rules/
+
+# Project context Markdown; keep README and functional Markdown trackable
+AGENTS.md
+/Docs/spotter-prd-revised.md
